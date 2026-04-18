@@ -36,7 +36,7 @@ struct SettingsView: View {
                                 apiKeyConfigured ? "Claude API Key (configured)" : "Set Claude API Key",
                                 systemImage: "key"
                             )
-                            .foregroundStyle(apiKeyConfigured ? .primary : .red)
+                            .foregroundStyle(apiKeyConfigured ? Color.primary : Color.red)
                             Spacer()
                             Image(systemName: "chevron.right")
                                 .font(.caption)
