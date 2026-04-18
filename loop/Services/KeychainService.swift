@@ -51,6 +51,15 @@ enum KeychainService {
         return String(data: data, encoding: .utf8)
     }
 
+    static func loadWithDevFallback() -> String? {
+        if let key = load() { return key }
+        #if DEBUG
+        return DevAPIKey.key
+        #else
+        return nil
+        #endif
+    }
+
     static func delete() throws {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,

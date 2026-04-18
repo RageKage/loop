@@ -5,6 +5,7 @@ struct APIKeySetupView: View {
 
     @State private var keyInput = ""
     @State private var errorMessage: String? = nil
+    @State private var isRevealed = false
     private var hasExistingKey: Bool { KeychainService.load() != nil }
 
     var body: some View {
@@ -16,9 +17,25 @@ struct APIKeySetupView: View {
                 }
 
                 Section {
-                    SecureField("sk-ant-...", text: $keyInput)
+                    HStack {
+                        Group {
+                            if isRevealed {
+                                TextField("sk-ant-...", text: $keyInput)
+                            } else {
+                                SecureField("sk-ant-...", text: $keyInput)
+                            }
+                        }
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
+
+                        Button {
+                            isRevealed.toggle()
+                        } label: {
+                            Image(systemName: isRevealed ? "eye.slash" : "eye")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                    }
 
                     if let error = errorMessage {
                         Text(error)

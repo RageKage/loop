@@ -65,7 +65,7 @@ enum ClaudeVisionService {
     """
 
     static func extractEvent(from imageData: Data) async throws -> ExtractedEvent {
-        guard let apiKey = KeychainService.load() else {
+        guard let apiKey = KeychainService.loadWithDevFallback() else {
             throw ClaudeVisionError.noAPIKey
         }
 
