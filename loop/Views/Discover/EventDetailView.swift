@@ -1,0 +1,280 @@
+import EventKit
+import MapKit
+import SwiftData
+import SwiftUI
+
+// MARK: - EventDetailView
+
+/// Full-screen detail sheet for a single event.
+/// Handles RSVP toggling (SavedEvent), EventKit calendar export, and Apple Maps directions.
+struct EventDetailView: View {
+    let event: Event
+
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss)      private var dismiss
+    @Query private var savedEvents: [SavedEvent]
+
+    @State private var addedToCalendar  = false
+    @State private var showCalendarAlert = false
+    @State private var calendarAlertMessage = ""
+
+    // MARK: Computed
+
+    private var savedEvent: SavedEvent? {
+        savedEvents.first { $0.eventID == event.id }
+    }
+
+    private var savedStatus: SavedEventStatus? {
+        savedEvent?.statusEnum
+    }
+
+    // MARK: Body
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    categoryHeader
+                    divider
+                    dateSection
+                    divider
+                    locationSection
+                    if !event.eventDescription.isEmpty {
+                        divider
+                        descriptionSection
+                    }
+                    divider
+                    rsvpSection
+                    divider
+                    actionSection
+                    Spacer(minLength: 32)
+                }
+                .padding()
+            }
+            .navigationTitle(event.title)
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
+                }
+            }
+            .alert("Calendar", isPresented: $showCalendarAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(calendarAlertMessage)
+            }
+        }
+    }
+
+    // MARK: Reusable divider
+
+    private var divider: some View {
+        Divider().padding(.vertical, 16)
+    }
+
+    // MARK: Subviews
+
+    private var categoryHeader: some View {
+        HStack(alignment: .center, spacing: 12) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(event.categoryEnum.color.opacity(0.12))
+                    .frame(width: 50, height: 50)
+                Image(systemName: event.categoryEnum.systemImage)
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(event.categoryEnum.color)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(event.categoryEnum.displayName)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Text(event.isFree ? "Free" : String(format: "$%.0f", event.price ?? 0))
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(event.isFree ? Color.green : Color.primary)
+            }
+            Spacer()
+            Text("By \(event.organizerName)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.trailing)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var dateSection: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Label("Date & Time", systemImage: "calendar")
+                .font(.headline)
+            Text(event.startDate.formatted(date: .long, time: .shortened))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            if let end = event.endDate {
+                Text("Ends \(end.formatted(date: .omitted, time: .shortened))")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            if let rule = event.recurrenceRule,
+               let display = rule.rruleDisplayString {
+                HStack(spacing: 4) {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.caption)
+                    Text(display)
+                        .font(.subheadline)
+                }
+                .foregroundStyle(.blue)
+            }
+        }
+    }
+
+    private var locationSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Location", systemImage: "mappin.and.ellipse")
+                .font(.headline)
+            Text(event.locationName)
+                .font(.subheadline)
+                .fontWeight(.medium)
+            if let address = event.address {
+                Text(address)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            // Static mini-map
+            Map(position: .constant(.region(MKCoordinateRegion(
+                center: event.coordinate,
+                latitudinalMeters: 600,
+                longitudinalMeters: 600
+            )))) {
+                Marker(event.locationName, coordinate: event.coordinate)
+                    .tint(event.categoryEnum.color)
+            }
+            .disabled(true)
+            .frame(height: 140)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+    }
+
+    private var descriptionSection: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Label("About", systemImage: "text.alignleft")
+                .font(.headline)
+            Text(event.eventDescription)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var rsvpSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Are you going?")
+                .font(.headline)
+            HStack(spacing: 12) {
+                RSVPButton(
+                    label: "I'm Going",
+                    systemImage: "checkmark.circle.fill",
+                    isActive: savedStatus == .going,
+                    action: { toggleStatus(.going) }
+                )
+                RSVPButton(
+                    label: "Interested",
+                    systemImage: "star.fill",
+                    isActive: savedStatus == .interested,
+                    action: { toggleStatus(.interested) }
+                )
+            }
+        }
+    }
+
+    private var actionSection: some View {
+        VStack(spacing: 12) {
+            Button {
+                Task { await addToCalendar() }
+            } label: {
+                Label(
+                    addedToCalendar ? "Added to Calendar" : "Add to Calendar",
+                    systemImage: addedToCalendar ? "checkmark.circle.fill" : "calendar.badge.plus"
+                )
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .tint(addedToCalendar ? .green : .blue)
+            .disabled(addedToCalendar)
+
+            Button { openDirections() } label: {
+                Label("Get Directions", systemImage: "arrow.triangle.turn.up.right.circle.fill")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .tint(.blue)
+        }
+    }
+
+    // MARK: Actions
+
+    private func toggleStatus(_ status: SavedEventStatus) {
+        if let existing = savedEvent {
+            if existing.statusEnum == status {
+                modelContext.delete(existing)          // tap same button → remove
+            } else {
+                existing.status = status.rawValue      // tap other button → switch
+            }
+        } else {
+            modelContext.insert(SavedEvent(eventID: event.id, status: status.rawValue))
+        }
+    }
+
+    private func addToCalendar() async {
+        let store = EKEventStore()
+        do {
+            let granted = try await store.requestWriteOnlyAccessToEvents()
+            guard granted else {
+                calendarAlertMessage = "Calendar access was denied. Enable it in Settings → Privacy & Security → Calendars."
+                showCalendarAlert = true
+                return
+            }
+            let ekEvent = EKEvent(eventStore: store)
+            ekEvent.title     = event.title
+            ekEvent.startDate = event.startDate
+            ekEvent.endDate   = event.endDate ?? event.startDate.addingTimeInterval(3_600)
+            ekEvent.notes     = event.eventDescription
+            ekEvent.location  = event.address ?? event.locationName
+            ekEvent.calendar  = store.defaultCalendarForNewEvents
+            try store.save(ekEvent, span: .thisEvent)
+            addedToCalendar = true
+        } catch {
+            calendarAlertMessage = "Couldn't add to calendar: \(error.localizedDescription)"
+            showCalendarAlert = true
+        }
+    }
+
+    private func openDirections() {
+        // iOS 26: MKPlacemark/init(placemark:) are deprecated.
+        // New API: init(location:address:) — pass nil for address to skip structured data.
+        let item = MKMapItem(location: event.clLocation, address: nil)
+        item.name = event.locationName
+        item.openInMaps(launchOptions: [
+            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDefault
+        ])
+    }
+}
+
+// MARK: - RSVPButton
+
+private struct RSVPButton: View {
+    let label: String
+    let systemImage: String
+    let isActive: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label(label, systemImage: systemImage)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+        .tint(isActive ? .blue : .gray)
+        .animation(.snappy(duration: 0.15), value: isActive)
+    }
+}
