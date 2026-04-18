@@ -8,7 +8,9 @@ struct CreateEntryView: View {
     /// CreateView can surface a toast without cross-tab state management.
     let onEventPublished: (String) -> Void
 
-    @State private var showSnapAlert = false
+    @State private var showCapture = false
+    @State private var capturedBytes: Int? = nil
+    @State private var showSuccessAlert = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -45,12 +47,12 @@ struct CreateEntryView: View {
                 }
                 .buttonStyle(.plain)
 
-                Button { showSnapAlert = true } label: {
+                Button { showCapture = true } label: {
                     entryCard(
                         icon: "camera.viewfinder",
                         title: "Snap a Poster",
                         subtitle: "AI reads the details automatically",
-                        badge: "Phase 4"
+                        badge: nil
                     )
                 }
                 .buttonStyle(.plain)
@@ -60,10 +62,22 @@ struct CreateEntryView: View {
         }
         .navigationTitle("Create")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Coming in Phase 4", isPresented: $showSnapAlert) {
-            Button("Got it", role: .cancel) {}
+        .fullScreenCover(isPresented: $showCapture) {
+            PosterCaptureView(
+                onCapture: { data in
+                    capturedBytes = data.count
+                    showCapture = false
+                    showSuccessAlert = true
+                },
+                onCancel: {
+                    showCapture = false
+                }
+            )
+        }
+        .alert("Got the image!", isPresented: $showSuccessAlert) {
+            Button("OK", role: .cancel) {}
         } message: {
-            Text("Poster scanning with AI is coming in Phase 4. Use Manual Entry for now to publish your event.")
+            Text("Bytes: \(capturedBytes ?? 0)")
         }
     }
 
