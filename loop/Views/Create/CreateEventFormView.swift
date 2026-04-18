@@ -22,8 +22,22 @@ struct CreateEventFormView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss)      private var dismiss
 
-    @State private var viewModel          = CreateEventViewModel()
+    @State private var viewModel: CreateEventViewModel
     @State private var showDiscard        = false
+
+    /// Manual-entry init (blank form).
+    init(onPublished: @escaping (String) -> Void) {
+        self.onPublished = onPublished
+        _viewModel = State(initialValue: CreateEventViewModel())
+    }
+
+    /// Poster-scan init (pre-filled form).
+    init(prefill: ExtractedEvent, posterData: Data, onPublished: @escaping (String) -> Void) {
+        self.onPublished = onPublished
+        let vm = CreateEventViewModel()
+        vm.prefill(from: prefill, posterData: posterData)
+        _viewModel = State(initialValue: vm)
+    }
     @State private var cameraPosition     = MapCameraPosition.automatic
     @State private var geocodeTask: Task<Void, Never>?
     /// True after the user taps the map to manually place the pin.
@@ -115,6 +129,7 @@ struct CreateEventFormView: View {
                     Text(err).font(.caption).foregroundStyle(.red)
                 }
             }
+            .confidenceHighlight(needsReview: viewModel.needsReview(.title))
 
             // Description row: multi-line editor + char counter
             VStack(alignment: .leading, spacing: 4) {
@@ -135,6 +150,7 @@ struct CreateEventFormView: View {
                         .foregroundStyle(viewModel.eventDescription.count > 500 ? Color.red : Color.secondary)
                 }
             }
+            .confidenceHighlight(needsReview: viewModel.needsReview(.description))
         } header: {
             Label("Event Details", systemImage: "text.bubble")
         }
@@ -148,6 +164,7 @@ struct CreateEventFormView: View {
                     Label(cat.displayName, systemImage: cat.systemImage).tag(cat)
                 }
             }
+            .confidenceHighlight(needsReview: viewModel.needsReview(.category))
         } header: {
             Label("Category", systemImage: "tag")
         }
@@ -157,25 +174,25 @@ struct CreateEventFormView: View {
     private var dateSection: some View {
         Section {
             // Start date — must be in the future
-            DatePicker(
-                "Starts",
-                selection: $viewModel.startDate,
-                in: Date.now...,
-                displayedComponents: [.date, .hourAndMinute]
-            )
-            .onChange(of: viewModel.startDate) { _, newDate in
-                viewModel.touchedFields.insert(.startDate)
-                // Keep weekday picker in sync with whatever date was chosen
-                viewModel.weekday = WeekdayOption.from(date: newDate)
-                // Nudge end date forward if it's no longer after start
-                if viewModel.hasEndDate && viewModel.endDate <= newDate {
-                    viewModel.endDate = newDate.addingTimeInterval(3_600)
+            VStack(alignment: .leading, spacing: 4) {
+                DatePicker(
+                    "Starts",
+                    selection: $viewModel.startDate,
+                    in: Date.now...,
+                    displayedComponents: [.date, .hourAndMinute]
+                )
+                .onChange(of: viewModel.startDate) { _, newDate in
+                    viewModel.touchedFields.insert(.startDate)
+                    viewModel.weekday = WeekdayOption.from(date: newDate)
+                    if viewModel.hasEndDate && viewModel.endDate <= newDate {
+                        viewModel.endDate = newDate.addingTimeInterval(3_600)
+                    }
+                }
+                if let err = viewModel.visibleError(for: .startDate) {
+                    Text(err).font(.caption).foregroundStyle(.red)
                 }
             }
-
-            if let err = viewModel.visibleError(for: .startDate) {
-                Text(err).font(.caption).foregroundStyle(.red)
-            }
+            .confidenceHighlight(needsReview: viewModel.needsReview(.startDate))
 
             Toggle("Has end time", isOn: $viewModel.hasEndDate)
 
@@ -228,7 +245,6 @@ struct CreateEventFormView: View {
                           text: $viewModel.locationName)
                     .onChange(of: viewModel.locationName) { _, newVal in
                         viewModel.touchedFields.insert(.locationName)
-                        // Only geocode from location name when no explicit address is set
                         if viewModel.address.trimmingCharacters(in: .whitespaces).isEmpty {
                             scheduleGeocode(newVal)
                         }
@@ -237,6 +253,7 @@ struct CreateEventFormView: View {
                     Text(err).font(.caption).foregroundStyle(.red)
                 }
             }
+            .confidenceHighlight(needsReview: viewModel.needsReview(.locationName))
 
             // Address (optional) — geocodes to update pin; typing here clears
             // the manual-pin flag so the geocoder is allowed to reposition.
@@ -246,6 +263,7 @@ struct CreateEventFormView: View {
                     let query = newVal.trimmingCharacters(in: .whitespaces)
                     scheduleGeocode(query.isEmpty ? viewModel.locationName : query)
                 }
+                .confidenceHighlight(needsReview: viewModel.needsReview(.address))
 
             Text("Tap the map to set the exact pin location")
                 .font(.caption)
@@ -316,6 +334,7 @@ struct CreateEventFormView: View {
                         Text(err).font(.caption).foregroundStyle(.red)
                     }
                 }
+                .confidenceHighlight(needsReview: viewModel.needsReview(.price))
             }
         } header: {
             Label("Pricing", systemImage: "dollarsign.circle")
@@ -334,6 +353,7 @@ struct CreateEventFormView: View {
                     Text(err).font(.caption).foregroundStyle(.red)
                 }
             }
+            .confidenceHighlight(needsReview: viewModel.needsReview(.organizerName))
 
             TextField("Email, phone, or @handle (optional)",
                       text: $viewModel.organizerContact)

@@ -4,8 +4,12 @@
 <dict>
 	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
 	<string>Loop adds events to your calendar when you tap "Add to Calendar."</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Loop uses the camera to photograph event posters so Claude can extract the event details automatically.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Loop uses your location to show events happening nearby.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Loop reads a photo from your library to scan an event poster.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

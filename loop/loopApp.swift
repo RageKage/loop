@@ -9,6 +9,7 @@ struct loopApp: App {
         let schema = Schema([
             Event.self,
             SavedEvent.self,
+            PendingScan.self,
         ])
 
         // Phase 1: plain on-disk store, no CloudKit sync.
@@ -34,6 +35,12 @@ struct loopApp: App {
 
         do {
             modelContainer = try ModelContainer(for: schema, configurations: [config])
+
+            // Load the Claude API key from a gitignored APIKey.swift-generated
+            // UserDefaults entry for frictionless dev workflow.
+            // APIKey.swift (if present) should call:
+            //   try? KeychainService.save("sk-ant-...")
+            // from a file that is .gitignored.
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }

@@ -74,7 +74,7 @@ enum WeekdayOption: String, CaseIterable, Identifiable {
 
 /// Tags for individual form fields, used to track which fields have been
 /// interacted with (so validation errors appear lazily, not all at once).
-enum FormField: Hashable {
+enum FormField: Hashable, CaseIterable {
     case title, description, locationName, organizerName, price, startDate, endDate
 }
 
@@ -82,6 +82,8 @@ enum FormField: Hashable {
 
 /// Owns all mutable form state and validation logic for the create-event form.
 /// The view holds this as @State; the form writes directly via @Bindable.
+/// Can be initialized blank (manual entry) or pre-filled from an ExtractedEvent
+/// (poster scan), in which case `confidence` drives low/medium-confidence highlights.
 @Observable
 final class CreateEventViewModel {
 
@@ -124,6 +126,72 @@ final class CreateEventViewModel {
     var organizerName    = ""
     var organizerContact = ""
 
+    // MARK: - Poster scan state
+
+    /// Confidence levels for each field, set when the VM is pre-filled from a scan.
+    /// Empty when entering manually.
+    var confidence: [ConfidenceField: ConfidenceLevel] = [:]
+
+    /// The poster JPEG to attach to the published Event (stores in posterImageData).
+    var posterImageData: Data?
+
+    /// Returns true if this field should show the "Please double-check" highlight.
+    func needsReview(_ field: ConfidenceField) -> Bool {
+        guard let level = confidence[field] else { return false }
+        return level == .low || level == .medium
+    }
+
+    // MARK: - Pre-fill from extracted event
+
+    /// Populates all form fields from an ExtractedEvent returned by ClaudeVisionService.
+    /// Dates that are nil or in the past fall back to tomorrow-7pm defaults.
+    func prefill(from extracted: ExtractedEvent, posterData: Data) {
+        title            = extracted.title
+        eventDescription = extracted.description
+        category         = extracted.category
+        locationName     = extracted.locationName
+        address          = extracted.address ?? ""
+        isFree           = extracted.isFree
+        organizerName    = extracted.organizerName ?? ""
+        confidence       = extracted.confidence
+        posterImageData  = posterData
+
+        if let price = extracted.price {
+            priceString = String(format: "%g", price)
+        }
+
+        let defaultStart: Date = {
+            let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: .now)!
+            return Calendar.current.date(bySettingHour: 19, minute: 0, second: 0, of: tomorrow) ?? tomorrow
+        }()
+
+        if let start = extracted.startDate, start > .now {
+            startDate = start
+            weekday   = WeekdayOption.from(date: start)
+        } else {
+            startDate = defaultStart
+        }
+
+        if let end = extracted.endDate, end > startDate {
+            hasEndDate = true
+            endDate    = end
+        } else {
+            hasEndDate = false
+            endDate    = startDate.addingTimeInterval(3_600)
+        }
+
+        if let rrule = extracted.recurrenceRule {
+            recurrenceRule = rrule
+        }
+
+        // Mark all fields as touched so validation errors show immediately on publish.
+        touchedFields = Set(FormField.allCases)
+    }
+
+    // Stores the raw RRULE from prefill; the recurrence picker can't always
+    // round-trip arbitrary RRULEs so we keep the original string separate.
+    private var recurrenceRule: String? = nil
+
     // MARK: - Interaction Tracking
 
     /// Fields the user has touched at least once.
@@ -138,9 +206,9 @@ final class CreateEventViewModel {
             || !locationName.isEmpty || !organizerName.isEmpty
     }
 
-    /// RRULE string derived from recurrence + weekday selections.
+    /// RRULE string: uses raw prefill value if set, otherwise derives from picker.
     var rruleString: String? {
-        recurrence.rrule(byday: recurrence == .weekly ? weekday.rawValue : nil)
+        recurrenceRule ?? recurrence.rrule(byday: recurrence == .weekly ? weekday.rawValue : nil)
     }
 
     // MARK: - Validation
@@ -223,6 +291,7 @@ final class CreateEventViewModel {
             category: category.rawValue,
             organizerName: organizerName.trimmingCharacters(in: .whitespaces),
             organizerContact: organizerContact.isEmpty ? nil : organizerContact,
+            posterImageData: posterImageData,
             isApproved: true
         )
     }

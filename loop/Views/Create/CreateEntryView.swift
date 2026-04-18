@@ -1,14 +1,17 @@
 import SwiftUI
 
 /// The two-button landing screen inside the Create tab.
-/// Tapping "Manual Entry" pushes the full form; "Snap a Poster" shows a
-/// coming-soon alert until Phase 4 wires up the Vision/AI pipeline.
+/// "Manual Entry" pushes the full form.
+/// "Snap a Poster" launches the poster-scan coordinator as a full-screen cover.
 struct CreateEntryView: View {
-    /// Called by the pushed form after a successful publish, so the parent
-    /// CreateView can surface a toast without cross-tab state management.
     let onEventPublished: (String) -> Void
 
-    @State private var showSnapAlert = false
+    @State private var showScanFlow     = false
+    @State private var showManualForm   = false
+    @State private var showOfflineSnack = false
+
+    @State private var networkMonitor = NetworkMonitor()
+    @State private var rateLimiter    = RateLimiter()
 
     var body: some View {
         VStack(spacing: 0) {
@@ -45,12 +48,14 @@ struct CreateEntryView: View {
                 }
                 .buttonStyle(.plain)
 
-                Button { showSnapAlert = true } label: {
+                Button {
+                    showScanFlow = true
+                } label: {
                     entryCard(
                         icon: "camera.viewfinder",
                         title: "Snap a Poster",
-                        subtitle: "AI reads the details automatically",
-                        badge: "Phase 4"
+                        subtitle: "Claude reads the details automatically",
+                        badge: nil
                     )
                 }
                 .buttonStyle(.plain)
@@ -60,10 +65,14 @@ struct CreateEntryView: View {
         }
         .navigationTitle("Create")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Coming in Phase 4", isPresented: $showSnapAlert) {
-            Button("Got it", role: .cancel) {}
-        } message: {
-            Text("Poster scanning with AI is coming in Phase 4. Use Manual Entry for now to publish your event.")
+        .fullScreenCover(isPresented: $showScanFlow) {
+            PosterScanCoordinator(
+                onEventPublished: { title in
+                    showScanFlow = false
+                    onEventPublished(title)
+                },
+                onCancel: { showScanFlow = false }
+            )
         }
     }
 

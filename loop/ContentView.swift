@@ -20,5 +20,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: [Event.self, SavedEvent.self], inMemory: true)
+        .modelContainer(for: [Event.self, SavedEvent.self, PendingScan.self], inMemory: true)
 }
