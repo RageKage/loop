@@ -1,21 +1,25 @@
+import SwiftData
 import SwiftUI
 
-/// Phase 1 placeholder. Phase 3 will replace this with the full create-event flow:
-///   - "Snap Poster" → AI extraction via Vision + Claude
-///   - "Manual Entry" → form with title, date, recurrence, location, category, price
+/// Root of the Create tab.
+/// Hosts a NavigationStack (so CreateEntryView → CreateEventFormView can push),
+/// and owns the success toast that appears after a form publish.
 struct CreateView: View {
+    @State private var toastMessage: String? = nil
+
     var body: some View {
         NavigationStack {
-            ContentUnavailableView {
-                Label("Create an Event", systemImage: "plus.circle")
-            } description: {
-                Text("Snap a poster or fill in the details manually.\nEvent creation form coming in Phase 3.")
+            CreateEntryView { publishedTitle in
+                withAnimation {
+                    toastMessage = "\"\(publishedTitle)\" is live in Discover"
+                }
             }
-            .navigationTitle("Create")
         }
+        .toast($toastMessage)
     }
 }
 
 #Preview {
     CreateView()
+        .modelContainer(for: [Event.self, SavedEvent.self], inMemory: true)
 }

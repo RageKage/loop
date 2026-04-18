@@ -27,18 +27,9 @@ struct DiscoverView: View {
         NavigationStack {
             VStack(spacing: 0) {
 
-                // ── Map / List segmented picker ──────────────────────────────
-                Picker("View", selection: $viewModel.displayMode) {
-                    Text("Map").tag(DiscoverViewModel.DisplayMode.map)
-                    Text("List").tag(DiscoverViewModel.DisplayMode.list)
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                .padding(.top, 8)
-                .padding(.bottom, 4)
-
                 // ── Filter chips ─────────────────────────────────────────────
                 FilterBarView(viewModel: viewModel)
+                    .padding(.top, 4)
                     .padding(.bottom, 4)
 
                 Divider()
@@ -62,6 +53,19 @@ struct DiscoverView: View {
                 }
             }
             .navigationTitle("Discover")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                // Map / List picker lives in the nav bar centre — reclaims all the
+                // vertical space that the large title would otherwise consume.
+                ToolbarItem(placement: .principal) {
+                    Picker("View", selection: $viewModel.displayMode) {
+                        Text("Map").tag(DiscoverViewModel.DisplayMode.map)
+                        Text("List").tag(DiscoverViewModel.DisplayMode.list)
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(width: 180)
+                }
+            }
             // Present event detail as a sheet; item-binding dismisses automatically
             // when selectedEvent is set back to nil.
             .sheet(item: $selectedEvent) { event in
