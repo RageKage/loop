@@ -1,21 +1,43 @@
 import SwiftUI
 
-/// Phase 1 placeholder. Each section will be wired up as the corresponding
-/// feature lands: location in Phase 2, notifications in Phase 4.
 struct SettingsView: View {
+    @State private var showAPIKeySetup = false
+    @State private var apiKeyRefreshTrigger = 0
+
+    private var apiKeyConfigured: Bool {
+        let _ = apiKeyRefreshTrigger
+        return KeychainService.load() != nil
+    }
+
     var body: some View {
         NavigationStack {
             List {
                 Section("Location") {
                     Label("Location Permission", systemImage: "location")
                         .foregroundStyle(.secondary)
-                    // Phase 2: request / show CLAuthorizationStatus here
                 }
 
                 Section("Notifications") {
                     Label("Notification Preferences", systemImage: "bell")
                         .foregroundStyle(.secondary)
-                    // Phase 4: UNUserNotificationCenter authorization + prefs here
+                }
+
+                Section {
+                    Button {
+                        showAPIKeySetup = true
+                    } label: {
+                        if apiKeyConfigured {
+                            Text("Claude API Key (configured)")
+                                .foregroundStyle(.tint)
+                        } else {
+                            Text("Set Claude API Key")
+                                .foregroundStyle(.red)
+                        }
+                    }
+                } header: {
+                    Text("Developer")
+                } footer: {
+                    Text("Required for poster scanning. Coming in the next update.")
                 }
 
                 Section("About") {
@@ -26,6 +48,11 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showAPIKeySetup, onDismiss: {
+                apiKeyRefreshTrigger += 1
+            }) {
+                APIKeySetupView()
+            }
         }
     }
 }
