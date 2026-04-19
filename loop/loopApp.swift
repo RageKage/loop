@@ -9,6 +9,7 @@ struct loopApp: App {
         let schema = Schema([
             Event.self,
             SavedEvent.self,
+            PendingScan.self,
         ])
 
         // Phase 1: plain on-disk store, no CloudKit sync.

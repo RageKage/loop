@@ -124,6 +124,22 @@ final class CreateEventViewModel {
     var organizerName    = ""
     var organizerContact = ""
 
+    // MARK: - Confidence (prefill only)
+
+    var prefillConfidence: ExtractedEvent.ConfidenceLevels? = nil
+    var touchedConfidenceFields: Set<String> = []
+
+    func confidenceLevel(for fieldName: String) -> String? {
+        guard !touchedConfidenceFields.contains(fieldName) else { return nil }
+        switch fieldName {
+        case "title":    return prefillConfidence?.title
+        case "date":     return prefillConfidence?.date
+        case "location": return prefillConfidence?.location
+        case "price":    return prefillConfidence?.price
+        default:         return nil
+        }
+    }
+
     // MARK: - Interaction Tracking
 
     /// Fields the user has touched at least once.
@@ -207,6 +223,7 @@ final class CreateEventViewModel {
     // MARK: - Init
 
     init(prefill: ExtractedEvent? = nil) {
+        prefillConfidence = prefill?.confidence
         guard let p = prefill else { return }
         title = p.title ?? ""
         eventDescription = p.description ?? ""

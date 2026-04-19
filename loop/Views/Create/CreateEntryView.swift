@@ -1,17 +1,23 @@
+import SwiftData
 import SwiftUI
 
-/// The two-button landing screen inside the Create tab.
-/// Tapping "Manual Entry" pushes the full form; "Snap a Poster" shows a
-/// coming-soon alert until Phase 4 wires up the Vision/AI pipeline.
 struct CreateEntryView: View {
-    /// Called by the pushed form after a successful publish, so the parent
-    /// CreateView can surface a toast without cross-tab state management.
     let onEventPublished: (String) -> Void
 
     @State private var coordinator: PosterScanCoordinator? = nil
+    @State private var networkMonitor = NetworkMonitor()
+    @State private var showPendingScans = false
+    @State private var enterManuallyFromScan = false
+
+    @Query(sort: \PendingScan.createdAt) private var pendingScans: [PendingScan]
 
     var body: some View {
         VStack(spacing: 0) {
+            // Pending scans banner
+            if !pendingScans.isEmpty && networkMonitor.isOnline {
+                pendingScansBanner
+            }
+
             Spacer()
 
             // ── Hero ────────────────────────────────────────────────────────
@@ -60,6 +66,17 @@ struct CreateEntryView: View {
         }
         .navigationTitle("Create")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(isPresented: $enterManuallyFromScan) {
+            CreateEventFormView(onPublished: onEventPublished)
+        }
+        .sheet(isPresented: $showPendingScans) {
+            PendingScansView { imageData in
+                showPendingScans = false
+                let c = PosterScanCoordinator()
+                coordinator = c
+                c.submitImage(imageData)
+            }
+        }
         .fullScreenCover(isPresented: Binding(
             get: { coordinator != nil },
             set: { if !$0 { coordinator = nil } }
@@ -71,13 +88,40 @@ struct CreateEntryView: View {
                         coordinator = nil
                         onEventPublished(title)
                     },
-                    onDismiss: { coordinator = nil }
+                    onDismiss: { coordinator = nil },
+                    onEnterManually: {
+                        coordinator = nil
+                        Task { @MainActor in
+                            try? await Task.sleep(for: .milliseconds(350))
+                            enterManuallyFromScan = true
+                        }
+                    }
                 )
             }
         }
     }
 
-    // MARK: - Card helper
+    // MARK: - Subviews
+
+    private var pendingScansBanner: some View {
+        Button { showPendingScans = true } label: {
+            HStack {
+                Image(systemName: "clock.badge.exclamationmark")
+                    .foregroundStyle(.orange)
+                Text("\(pendingScans.count) poster\(pendingScans.count == 1 ? "" : "s") waiting to scan")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(Color(.systemYellow).opacity(0.15))
+        }
+        .buttonStyle(.plain)
+    }
 
     private func entryCard(
         icon: String,
@@ -125,4 +169,5 @@ struct CreateEntryView: View {
     NavigationStack {
         CreateEntryView(onEventPublished: { _ in })
     }
+    .modelContainer(for: [Event.self, SavedEvent.self, PendingScan.self], inMemory: true)
 }

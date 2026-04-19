@@ -7,6 +7,7 @@ struct SettingsView: View {
     @State private var isTesting = false
     @State private var testResult: String? = nil
     @State private var showResult = false
+    @State private var rateLimiter = RateLimiter()
 
     private var apiKeyConfigured: Bool {
         let _ = apiKeyRefreshTrigger
@@ -59,11 +60,23 @@ struct SettingsView: View {
                         testResult = "Check Xcode console"
                         showResult = true
                     }
+
+                    LabeledContent("Scan quota") {
+                        Text("\(rateLimiter.scansUsed) / 20")
+                            .monospacedDigit()
+                            .foregroundStyle(rateLimiter.scansUsed >= 20 ? .red : .secondary)
+                    }
+
+                    Button("Reset Scan Quota (debug)") {
+                        rateLimiter.reset()
+                    }
+                    .foregroundStyle(.red)
                 } header: {
                     Text("Developer")
                 } footer: {
-                    Text("Required for poster scanning. Coming in the next update.")
+                    Text("Required for poster scanning. Quota resets 24 hours after your first scan of the day.")
                 }
+                .onAppear { rateLimiter = RateLimiter() }
 
                 Section("About") {
                     LabeledContent("App", value: "Loop")

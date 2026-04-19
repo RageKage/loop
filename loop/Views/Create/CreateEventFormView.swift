@@ -110,12 +110,14 @@ struct CreateEventFormView: View {
                     TextField("Event title", text: $viewModel.title)
                         .onChange(of: viewModel.title) { _, _ in
                             viewModel.touchedFields.insert(.title)
+                            viewModel.touchedConfidenceFields.insert("title")
                         }
                     Text("\(viewModel.title.count)/80")
                         .font(.caption2)
                         .monospacedDigit()
                         .foregroundStyle(viewModel.title.count > 80 ? Color.red : Color.secondary)
                 }
+                .confidence(viewModel.confidenceLevel(for: "title"))
                 if let err = viewModel.visibleError(for: .title) {
                     Text(err).font(.caption).foregroundStyle(.red)
                 }
@@ -168,8 +170,10 @@ struct CreateEventFormView: View {
                 in: Date.now...,
                 displayedComponents: [.date, .hourAndMinute]
             )
+            .confidence(viewModel.confidenceLevel(for: "date"))
             .onChange(of: viewModel.startDate) { _, newDate in
                 viewModel.touchedFields.insert(.startDate)
+                viewModel.touchedConfidenceFields.insert("date")
                 // Keep weekday picker in sync with whatever date was chosen
                 viewModel.weekday = WeekdayOption.from(date: newDate)
                 // Nudge end date forward if it's no longer after start
@@ -231,8 +235,10 @@ struct CreateEventFormView: View {
             VStack(alignment: .leading, spacing: 4) {
                 TextField("Location name (e.g. Lake Harriet Bandshell)",
                           text: $viewModel.locationName)
+                    .confidence(viewModel.confidenceLevel(for: "location"))
                     .onChange(of: viewModel.locationName) { _, newVal in
                         viewModel.touchedFields.insert(.locationName)
+                        viewModel.touchedConfidenceFields.insert("location")
                         // Only geocode from location name when no explicit address is set
                         if viewModel.address.trimmingCharacters(in: .whitespaces).isEmpty {
                             scheduleGeocode(newVal)
@@ -315,8 +321,10 @@ struct CreateEventFormView: View {
                             .keyboardType(.decimalPad)
                             .onChange(of: viewModel.priceString) { _, _ in
                                 viewModel.touchedFields.insert(.price)
+                                viewModel.touchedConfidenceFields.insert("price")
                             }
                     }
+                    .confidence(viewModel.confidenceLevel(for: "price"))
                     if let err = viewModel.visibleError(for: .price) {
                         Text(err).font(.caption).foregroundStyle(.red)
                     }
