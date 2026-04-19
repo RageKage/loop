@@ -24,6 +24,31 @@ struct ExtractedEvent: Codable, Sendable {
         var price: String?
     }
 
+    #if DEBUG
+    static var confidenceTestFixture: ExtractedEvent {
+        let start = ISO8601DateFormatter().string(
+            from: Calendar.current.date(byAdding: .day, value: 7, to: .now)!
+        )
+        return ExtractedEvent(
+            isEventPoster: true,
+            refused: false,
+            refusalReason: nil,
+            title: "Test Event",
+            description: "Confidence highlight test",
+            startISO: start,
+            endISO: nil,
+            recurrenceRRule: nil,
+            locationName: "Test Venue",
+            address: nil,
+            isFree: false,
+            priceUSD: 10,
+            organizerName: "Test",
+            category: "social",
+            confidence: ConfidenceLevels(title: "high", date: "low", location: "medium", price: "low")
+        )
+    }
+    #endif
+
     enum CodingKeys: String, CodingKey {
         case isEventPoster = "is_event_poster"
         case refused

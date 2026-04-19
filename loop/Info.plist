@@ -2,6 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.24312314947-j9pd7rae2p7k1go6g0vubdn2tc5reo95</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
 	<string>Loop adds events to your calendar when you tap "Add to Calendar."</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

@@ -2,6 +2,15 @@
 
 Tracking bugs we've flagged but deferred. Not blocking for current phase.
 
+## Deferred Features
+
+### Sign in with Apple — deferred to paid Apple Developer account
+Apple's free-tier Personal Team cannot use the Sign in with Apple capability.
+The plumbing is fully implemented (SignInWithAppleView, AuthService Apple flow,
+entitlements) but currently wrapped in `#if false` in SettingsView and
+CreateEventFormView. Re-enable when upgrading to the $99/yr Apple Developer Program.
+Also required for CloudKit sync (Phase 4c) and Push Notifications.
+
 ## Phase 4a — Poster Scanner
 
 1. **ISO date parsing drops timezone-offset dates**

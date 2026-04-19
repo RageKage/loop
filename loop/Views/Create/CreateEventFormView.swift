@@ -1,4 +1,6 @@
+import AuthenticationServices
 import CoreLocation
+import GoogleSignIn
 import MapKit
 import SwiftData
 import SwiftUI
@@ -31,6 +33,7 @@ struct CreateEventFormView: View {
     @State private var showDiscard        = false
     @State private var cameraPosition     = MapCameraPosition.automatic
     @State private var geocodeTask: Task<Void, Never>?
+    @State private var authCalloutDismissed = false
     /// True after the user taps the map to manually place the pin.
     /// Suppresses geocoder from overwriting their explicit choice until
     /// they edit the address field again.
@@ -40,6 +43,7 @@ struct CreateEventFormView: View {
 
     var body: some View {
         Form {
+            authSection
             detailsSection
             categorySection
             dateSection
@@ -100,6 +104,50 @@ struct CreateEventFormView: View {
     }
 
     // MARK: - Form sections
+
+    @ViewBuilder
+    private var authSection: some View {
+        if let identity = AuthService.shared.currentIdentity {
+            Section {
+                Label {
+                    Text("Publishing as **\(identity.displayName ?? "Verified organizer")**")
+                        .font(.subheadline)
+                } icon: {
+                    Image(systemName: "checkmark.seal.fill")
+                        .foregroundStyle(.blue)
+                }
+            }
+        } else if !authCalloutDismissed {
+            Section {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Post as a verified organizer")
+                        .font(.headline)
+                    Text("Sign in to edit or remove this event later. Posts without sign-in are community posts.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    SignInWithGoogleView(
+                        onSuccess: { _ in },
+                        onError: { _ in }
+                    )
+                    // Sign in with Apple requires a paid Apple Developer Program account ($99/yr).
+                    // Re-enable this block once the paid account is active. See KNOWN_ISSUES.md.
+                    #if false
+                    SignInWithAppleView(
+                        onSuccess: { _ in },
+                        onError: { _ in }
+                    )
+                    #endif
+                    Button("Skip for now") {
+                        authCalloutDismissed = true
+                    }
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                }
+                .padding(.vertical, 4)
+            }
+        }
+    }
 
     @ViewBuilder
     private var detailsSection: some View {
@@ -204,7 +252,7 @@ struct CreateEventFormView: View {
                 }
             }
         } header: {
-            Label("Date & Time", systemImage: "calendar.clock")
+            Label("Date & Time", systemImage: "calendar.badge.clock")
         }
     }
 

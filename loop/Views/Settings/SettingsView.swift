@@ -1,3 +1,5 @@
+import AuthenticationServices
+import GoogleSignIn
 import SwiftUI
 import UIKit
 
@@ -8,6 +10,10 @@ struct SettingsView: View {
     @State private var testResult: String? = nil
     @State private var showResult = false
     @State private var rateLimiter = RateLimiter()
+    @State private var showSignOutConfirmation = false
+    #if DEBUG
+    @State private var showConfidenceTest = false
+    #endif
 
     private var apiKeyConfigured: Bool {
         let _ = apiKeyRefreshTrigger
@@ -17,6 +23,8 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                accountSection
+
                 Section("Location") {
                     Label("Location Permission", systemImage: "location")
                         .foregroundStyle(.secondary)
@@ -71,6 +79,12 @@ struct SettingsView: View {
                         rateLimiter.reset()
                     }
                     .foregroundStyle(.red)
+
+                    #if DEBUG
+                    NavigationLink("Force low-confidence scan test") {
+                        CreateEventFormView(prefill: .confidenceTestFixture, onPublished: { _ in })
+                    }
+                    #endif
                 } header: {
                     Text("Developer")
                 } footer: {
@@ -95,6 +109,58 @@ struct SettingsView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(testResult ?? "")
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var accountSection: some View {
+        if let identity = AuthService.shared.currentIdentity {
+            Section("Account") {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(identity.displayName ?? (identity.provider == .google ? "Signed in with Google" : "Signed in with Apple"))
+                        .font(.body)
+                    if let email = identity.email {
+                        Text(email.hasSuffix("@privaterelay.appleid.com") ? "Private relay email" : email)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.vertical, 2)
+
+                Button("Sign Out", role: .destructive) {
+                    showSignOutConfirmation = true
+                }
+                .confirmationDialog("Sign Out", isPresented: $showSignOutConfirmation, titleVisibility: .visible) {
+                    Button("Sign Out", role: .destructive) {
+                        AuthService.shared.signOut()
+                    }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("You'll be signed out. Community posts you've made won't be affected.")
+                }
+            }
+        } else {
+            Section {
+                SignInWithGoogleView(
+                    onSuccess: { _ in },
+                    onError: { _ in }
+                )
+                .padding(.vertical, 4)
+
+                // Sign in with Apple requires a paid Apple Developer Program account ($99/yr).
+                // Re-enable this block once the paid account is active. See KNOWN_ISSUES.md.
+                #if false
+                SignInWithAppleView(
+                    onSuccess: { _ in },
+                    onError: { _ in }
+                )
+                .padding(.vertical, 4)
+                #endif
+            } header: {
+                Text("Account")
+            } footer: {
+                Text("Sign in to post as a verified organizer and manage your events.")
             }
         }
     }

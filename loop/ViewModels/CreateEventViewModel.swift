@@ -228,8 +228,8 @@ final class CreateEventViewModel {
         title = p.title ?? ""
         eventDescription = p.description ?? ""
         if let raw = p.category, let cat = EventCategory(rawValue: raw) { category = cat }
-        if let iso = p.startISO, let date = Self.parseISO(iso) { startDate = date }
-        if let iso = p.endISO, let date = Self.parseISO(iso) {
+        if let date = Self.parseISO(p.startISO) { startDate = date }
+        if let date = Self.parseISO(p.endISO) {
             endDate = date
             hasEndDate = true
         }
@@ -246,20 +246,29 @@ final class CreateEventViewModel {
         organizerName = p.organizerName ?? ""
     }
 
-    private static func parseISO(_ string: String) -> Date? {
-        let withFractional = ISO8601DateFormatter()
-        withFractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        if let d = withFractional.date(from: string) { return d }
-        let plain = ISO8601DateFormatter()
-        plain.formatOptions = [.withInternetDateTime]
-        return plain.date(from: string)
+    private static func parseISO(_ string: String?) -> Date? {
+        guard let string else { return nil }
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withTimeZone, .withColonSeparatorInTimeZone]
+        if let date = formatter.date(from: string) { return date }
+        formatter.formatOptions.insert(.withFractionalSeconds)
+        if let date = formatter.date(from: string) { return date }
+        print("⚠️ Failed to parse ISO date: \(string)")
+        return nil
     }
+
+    // MARK: - Auth
+
+    /// Returns true when sign-in should be required before publish.
+    /// Phase 4b-i: always false — anonymous publish is allowed from all paths.
+    var requiresAuthForPublish: Bool { false }
 
     // MARK: - Build
 
     /// Constructs the Event model ready to be inserted into a ModelContext.
     func buildEvent() -> Event {
-        Event(
+        let identity = AuthService.shared.currentIdentity
+        return Event(
             title: title.trimmingCharacters(in: .whitespaces),
             eventDescription: eventDescription.trimmingCharacters(in: .whitespaces),
             startDate: startDate,
@@ -274,7 +283,10 @@ final class CreateEventViewModel {
             category: category.rawValue,
             organizerName: organizerName.trimmingCharacters(in: .whitespaces),
             organizerContact: organizerContact.isEmpty ? nil : organizerContact,
-            isApproved: true
+            isApproved: true,
+            creatorID: identity?.userID,
+            creatorType: identity != nil ? "verified" : "community",
+            creatorDisplayName: identity?.displayName
         )
     }
 }

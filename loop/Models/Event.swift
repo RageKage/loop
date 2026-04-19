@@ -71,6 +71,9 @@ final class Event {
     var attendeeCount: Int
     var createdAt: Date
     var isApproved: Bool            // Moderation gate before public visibility
+    var creatorID: String? = nil
+    var creatorType: String = "community"
+    var creatorDisplayName: String? = nil
 
     init(
         id: UUID = UUID(),
@@ -91,7 +94,10 @@ final class Event {
         posterImageData: Data? = nil,
         attendeeCount: Int = 0,
         createdAt: Date = .now,
-        isApproved: Bool = false
+        isApproved: Bool = false,
+        creatorID: String? = nil,
+        creatorType: String = "community",
+        creatorDisplayName: String? = nil
     ) {
         self.id = id
         self.title = title
@@ -112,10 +118,23 @@ final class Event {
         self.attendeeCount = attendeeCount
         self.createdAt = createdAt
         self.isApproved = isApproved
+        self.creatorID = creatorID
+        self.creatorType = creatorType
+        self.creatorDisplayName = creatorDisplayName
     }
 
     /// Typed convenience accessor; falls back to `.other` for any unknown raw value.
     var categoryEnum: EventCategory {
         EventCategory(rawValue: category) ?? .other
     }
+
+    var creatorTypeEnum: EventCreatorType {
+        EventCreatorType(rawValue: creatorType) ?? .community
+    }
+}
+
+// MARK: - EventCreatorType
+
+enum EventCreatorType: String, Codable, Sendable {
+    case community, verified
 }

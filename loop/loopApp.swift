@@ -1,5 +1,6 @@
-import SwiftUI
+import GoogleSignIn
 import SwiftData
+import SwiftUI
 
 @main
 struct loopApp: App {
@@ -38,11 +39,16 @@ struct loopApp: App {
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
+
+        GoogleSignInService.configure()
     }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onOpenURL { url in
+                    _ = GoogleSignInService.shared.handleURL(url)
+                }
         }
         .modelContainer(modelContainer)
     }
