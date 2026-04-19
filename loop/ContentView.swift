@@ -1,7 +1,7 @@
 import SwiftData
 import SwiftUI
 
-/// Root view. Owns the three-tab shell; each tab owns its own NavigationStack.
+/// Root view. Owns the four-tab shell; each tab owns its own NavigationStack.
 struct ContentView: View {
     var body: some View {
         TabView {
@@ -10,6 +10,9 @@ struct ContentView: View {
             }
             Tab("Create", systemImage: "plus.circle.fill") {
                 CreateView()
+            }
+            Tab("My Events", systemImage: "bookmark") {
+                MyEventsView()
             }
             Tab("Settings", systemImage: "gearshape") {
                 SettingsView()
