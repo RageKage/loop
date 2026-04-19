@@ -22,7 +22,12 @@ struct CreateEventFormView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss)      private var dismiss
 
-    @State private var viewModel          = CreateEventViewModel()
+    @State private var viewModel: CreateEventViewModel
+
+    init(prefill: ExtractedEvent? = nil, onPublished: @escaping (String) -> Void) {
+        self.onPublished = onPublished
+        _viewModel = State(initialValue: CreateEventViewModel(prefill: prefill))
+    }
     @State private var showDiscard        = false
     @State private var cameraPosition     = MapCameraPosition.automatic
     @State private var geocodeTask: Task<Void, Never>?

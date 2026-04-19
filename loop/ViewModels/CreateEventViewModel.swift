@@ -204,6 +204,40 @@ final class CreateEventViewModel {
         return validationErrors[field]
     }
 
+    // MARK: - Init
+
+    init(prefill: ExtractedEvent? = nil) {
+        guard let p = prefill else { return }
+        title = p.title ?? ""
+        eventDescription = p.description ?? ""
+        if let raw = p.category, let cat = EventCategory(rawValue: raw) { category = cat }
+        if let iso = p.startISO, let date = Self.parseISO(iso) { startDate = date }
+        if let iso = p.endISO, let date = Self.parseISO(iso) {
+            endDate = date
+            hasEndDate = true
+        }
+        if let rrule = p.recurrenceRRule {
+            recurrence = rrule.contains("FREQ=WEEKLY") ? .weekly : .none
+        }
+        locationName = p.locationName ?? ""
+        address = p.address ?? ""
+        if let free = p.isFree { isFree = free }
+        if let price = p.priceUSD {
+            isFree = false
+            priceString = price == price.rounded() ? String(Int(price)) : String(price)
+        }
+        organizerName = p.organizerName ?? ""
+    }
+
+    private static func parseISO(_ string: String) -> Date? {
+        let withFractional = ISO8601DateFormatter()
+        withFractional.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let d = withFractional.date(from: string) { return d }
+        let plain = ISO8601DateFormatter()
+        plain.formatOptions = [.withInternetDateTime]
+        return plain.date(from: string)
+    }
+
     // MARK: - Build
 
     /// Constructs the Event model ready to be inserted into a ModelContext.

@@ -8,9 +8,7 @@ struct CreateEntryView: View {
     /// CreateView can surface a toast without cross-tab state management.
     let onEventPublished: (String) -> Void
 
-    @State private var showCapture = false
-    @State private var capturedBytes: Int? = nil
-    @State private var showSuccessAlert = false
+    @State private var coordinator: PosterScanCoordinator? = nil
 
     var body: some View {
         VStack(spacing: 0) {
@@ -47,7 +45,7 @@ struct CreateEntryView: View {
                 }
                 .buttonStyle(.plain)
 
-                Button { showCapture = true } label: {
+                Button { coordinator = PosterScanCoordinator() } label: {
                     entryCard(
                         icon: "camera.viewfinder",
                         title: "Snap a Poster",
@@ -62,22 +60,20 @@ struct CreateEntryView: View {
         }
         .navigationTitle("Create")
         .navigationBarTitleDisplayMode(.inline)
-        .fullScreenCover(isPresented: $showCapture) {
-            PosterCaptureView(
-                onCapture: { data in
-                    capturedBytes = data.count
-                    showCapture = false
-                    showSuccessAlert = true
-                },
-                onCancel: {
-                    showCapture = false
-                }
-            )
-        }
-        .alert("Got the image!", isPresented: $showSuccessAlert) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text("Bytes: \(capturedBytes ?? 0)")
+        .fullScreenCover(isPresented: Binding(
+            get: { coordinator != nil },
+            set: { if !$0 { coordinator = nil } }
+        )) {
+            if let c = coordinator {
+                ScanFlowView(
+                    coordinator: c,
+                    onEventPublished: { title in
+                        coordinator = nil
+                        onEventPublished(title)
+                    },
+                    onDismiss: { coordinator = nil }
+                )
+            }
         }
     }
 
