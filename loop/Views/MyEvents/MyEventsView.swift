@@ -7,9 +7,12 @@ struct MyEventsView: View {
     @Query private var allEvents: [Event]
     @Query private var savedEvents: [SavedEvent]
 
+    @Environment(\.modelContext) private var modelContext
+
     @State private var selectedTab: MyEventsTab = .going
     @State private var selectedEvent: Event? = nil
     @State private var locationService = LocationService()
+    @State private var eventPendingDelete: Event? = nil
 
     private var identity: AuthIdentity? { AuthService.shared.currentIdentity }
 
@@ -77,6 +80,22 @@ struct MyEventsView: View {
             .sheet(item: $selectedEvent) { event in
                 EventDetailView(event: event)
             }
+            .confirmationDialog(
+                "Delete this event?",
+                isPresented: Binding(
+                    get: { eventPendingDelete != nil },
+                    set: { if !$0 { eventPendingDelete = nil } }
+                ),
+                titleVisibility: .visible
+            ) {
+                Button("Delete", role: .destructive) {
+                    if let event = eventPendingDelete { deleteEvent(event) }
+                    eventPendingDelete = nil
+                }
+                Button("Cancel", role: .cancel) { eventPendingDelete = nil }
+            } message: {
+                Text("This cannot be undone.")
+            }
         }
     }
 
@@ -91,6 +110,15 @@ struct MyEventsView: View {
                             EventListRowView(event: event, userLocation: locationService.effectiveLocation)
                         }
                         .buttonStyle(.plain)
+                        .swipeActions(edge: .trailing) {
+                            if selectedTab == .hosting {
+                                Button(role: .destructive) {
+                                    eventPendingDelete = event
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -101,11 +129,25 @@ struct MyEventsView: View {
                             EventListRowView(event: event, userLocation: locationService.effectiveLocation)
                         }
                         .buttonStyle(.plain)
+                        .swipeActions(edge: .trailing) {
+                            if selectedTab == .hosting {
+                                Button(role: .destructive) {
+                                    eventPendingDelete = event
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
         .listStyle(.plain)
+    }
+
+    private func deleteEvent(_ event: Event) {
+        savedEvents.filter { $0.eventID == event.id }.forEach { modelContext.delete($0) }
+        modelContext.delete(event)
     }
 
     // MARK: - Empty states

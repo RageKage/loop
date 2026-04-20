@@ -150,7 +150,17 @@ final class CreateEventViewModel {
     // MARK: - Computed State
 
     var isDirty: Bool {
-        !title.isEmpty || !eventDescription.isEmpty
+        if let o = originalValues {
+            return title != o.title || eventDescription != o.eventDescription
+                || locationName != o.locationName || address != o.address
+                || organizerName != o.organizerName || organizerContact != o.organizerContact
+                || category != o.category || startDate != o.startDate
+                || hasEndDate != o.hasEndDate || (hasEndDate && endDate != o.endDate)
+                || recurrence != o.recurrence || weekday != o.weekday
+                || abs(latitude - o.latitude) > 0.000001 || abs(longitude - o.longitude) > 0.000001
+                || isFree != o.isFree || priceString != o.priceString
+        }
+        return !title.isEmpty || !eventDescription.isEmpty
             || !locationName.isEmpty || !organizerName.isEmpty
     }
 
@@ -220,6 +230,26 @@ final class CreateEventViewModel {
         return validationErrors[field]
     }
 
+    // MARK: - Edit Mode
+
+    private var editingEvent: Event? = nil
+    var isEditMode: Bool { editingEvent != nil }
+
+    private struct OriginalValues {
+        let title, eventDescription, locationName, address: String
+        let organizerName, organizerContact: String
+        let category: EventCategory
+        let startDate, endDate: Date
+        let hasEndDate: Bool
+        let recurrence: RecurrenceOption
+        let weekday: WeekdayOption
+        let latitude, longitude: Double
+        let isFree: Bool
+        let priceString: String
+    }
+
+    private var originalValues: OriginalValues? = nil
+
     // MARK: - Init
 
     init(prefill: ExtractedEvent? = nil) {
@@ -244,6 +274,71 @@ final class CreateEventViewModel {
             priceString = price == price.rounded() ? String(Int(price)) : String(price)
         }
         organizerName = p.organizerName ?? ""
+    }
+
+    init(editing event: Event) {
+        editingEvent = event
+        title = event.title
+        eventDescription = event.eventDescription
+        if let cat = EventCategory(rawValue: event.category) { category = cat }
+        startDate = event.startDate
+        if let end = event.endDate {
+            endDate = end
+            hasEndDate = true
+        } else {
+            hasEndDate = false
+        }
+        if let rule = event.recurrenceRule {
+            if rule.contains("FREQ=DAILY") {
+                recurrence = .daily
+            } else if rule.contains("FREQ=WEEKLY") {
+                recurrence = .weekly
+                weekday = WeekdayOption.allCases.first(where: { rule.contains("BYDAY=\($0.rawValue)") })
+                    ?? WeekdayOption.from(date: event.startDate)
+            } else if rule.contains("FREQ=MONTHLY") {
+                recurrence = .monthly
+            }
+        }
+        locationName = event.locationName
+        address = event.address ?? ""
+        latitude = event.latitude
+        longitude = event.longitude
+        isFree = event.isFree
+        if let p = event.price, !event.isFree {
+            priceString = p == p.rounded() ? String(Int(p)) : String(p)
+        }
+        organizerName = event.organizerName
+        organizerContact = event.organizerContact ?? ""
+
+        originalValues = OriginalValues(
+            title: title, eventDescription: eventDescription,
+            locationName: locationName, address: address,
+            organizerName: organizerName, organizerContact: organizerContact,
+            category: category, startDate: startDate, endDate: endDate,
+            hasEndDate: hasEndDate, recurrence: recurrence, weekday: weekday,
+            latitude: latitude, longitude: longitude,
+            isFree: isFree, priceString: priceString
+        )
+    }
+
+    /// Updates the editing event's mutable fields in-place. Call only in edit mode.
+    /// creatorID, creatorType, createdAt are intentionally excluded (immutable for audit).
+    func saveChanges() {
+        guard let event = editingEvent else { return }
+        event.title = title.trimmingCharacters(in: .whitespaces)
+        event.eventDescription = eventDescription.trimmingCharacters(in: .whitespaces)
+        event.category = category.rawValue
+        event.startDate = startDate
+        event.endDate = hasEndDate ? endDate : nil
+        event.recurrenceRule = rruleString
+        event.locationName = locationName.trimmingCharacters(in: .whitespaces)
+        event.latitude = latitude
+        event.longitude = longitude
+        event.address = address.isEmpty ? nil : address.trimmingCharacters(in: .whitespaces)
+        event.isFree = isFree
+        event.price = isFree ? nil : Double(priceString)
+        event.organizerName = organizerName.trimmingCharacters(in: .whitespaces)
+        event.organizerContact = organizerContact.isEmpty ? nil : organizerContact
     }
 
     private static func parseISO(_ string: String?) -> Date? {

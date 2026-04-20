@@ -4,6 +4,16 @@ Tracking bugs we've flagged but deferred. Not blocking for current phase.
 
 ## Deferred Features
 
+### Anonymous RSVPs are device-local
+SavedEvent records with userID == nil don't sync across devices. A user who
+taps "I'm Going" anonymously on their iPhone won't see it on their iPad, and
+loses them entirely if the app is deleted or the phone is replaced. Two possible
+fixes later:
+- (a) Gate RSVPs behind sign-in like we gate event creation
+- (b) Tie anonymous RSVPs to a per-install UUID stored in Keychain, so they
+      survive reinstall via iCloud Keychain sync
+Fine for MVP / TestFlight. Revisit before App Store launch.
+
 ### Sign in with Apple — deferred to paid Apple Developer account
 Apple's free-tier Personal Team cannot use the Sign in with Apple capability.
 The plumbing is fully implemented (SignInWithAppleView, AuthService Apple flow,

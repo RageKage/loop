@@ -30,6 +30,11 @@ struct CreateEventFormView: View {
         self.onPublished = onPublished
         _viewModel = State(initialValue: CreateEventViewModel(prefill: prefill))
     }
+
+    init(editing event: Event, onSaved: @escaping (String) -> Void) {
+        self.onPublished = onSaved
+        _viewModel = State(initialValue: CreateEventViewModel(editing: event))
+    }
     @State private var showDiscard        = false
     @State private var cameraPosition     = MapCameraPosition.automatic
     @State private var geocodeTask: Task<Void, Never>?
@@ -53,7 +58,7 @@ struct CreateEventFormView: View {
             organizerSection
         }
         .scrollDismissesKeyboard(.interactively)
-        .navigationTitle("New Event")
+        .navigationTitle(viewModel.isEditMode ? "Edit Event" : "New Event")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -65,7 +70,7 @@ struct CreateEventFormView: View {
             }
         }
         .confirmationDialog(
-            "Discard Event?",
+            viewModel.isEditMode ? "Discard Changes?" : "Discard Event?",
             isPresented: $showDiscard,
             titleVisibility: .visible
         ) {
@@ -76,7 +81,7 @@ struct CreateEventFormView: View {
             // and is NOT rendered as a visible button when inside a NavigationStack.
             Button("Keep Editing") {}
         } message: {
-            Text("You'll lose everything you've entered.")
+            Text(viewModel.isEditMode ? "Your changes will be lost." : "You'll lose everything you've entered.")
         }
         .onAppear { centreMapOnDefault() }
         .onDisappear { geocodeTask?.cancel() }
@@ -91,12 +96,17 @@ struct CreateEventFormView: View {
     }
 
     private var publishButton: some View {
-        Button("Publish") {
+        Button(viewModel.isEditMode ? "Save Changes" : "Publish") {
             viewModel.publishAttempted = true
             guard viewModel.isValid else { return }
-            let event = viewModel.buildEvent()
-            modelContext.insert(event)
-            onPublished(event.title)
+            if viewModel.isEditMode {
+                viewModel.saveChanges()
+                onPublished(viewModel.title.trimmingCharacters(in: .whitespaces))
+            } else {
+                let event = viewModel.buildEvent()
+                modelContext.insert(event)
+                onPublished(event.title)
+            }
             dismiss()
         }
         .fontWeight(.semibold)

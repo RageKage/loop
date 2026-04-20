@@ -17,6 +17,8 @@ struct EventDetailView: View {
     @State private var addedToCalendar  = false
     @State private var showCalendarAlert = false
     @State private var calendarAlertMessage = ""
+    @State private var showEdit = false
+    @State private var showDeleteConfirm = false
 
     // MARK: Computed
 
@@ -28,6 +30,12 @@ struct EventDetailView: View {
         savedEvent?.statusEnum
     }
 
+    private var isOwner: Bool {
+        guard let creatorID = event.creatorID,
+              let userID = AuthService.shared.currentIdentity?.userID else { return false }
+        return creatorID == userID
+    }
+
     // MARK: Body
 
     var body: some View {
@@ -35,6 +43,10 @@ struct EventDetailView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     categoryHeader
+                    if isOwner {
+                        divider
+                        ownerControls
+                    }
                     divider
                     dateSection
                     divider
@@ -63,6 +75,21 @@ struct EventDetailView: View {
             } message: {
                 Text(calendarAlertMessage)
             }
+            .sheet(isPresented: $showEdit) {
+                NavigationStack {
+                    EditEventFormView(event: event, onSaved: { _ in })
+                }
+            }
+            .confirmationDialog(
+                "Delete this event?",
+                isPresented: $showDeleteConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("Delete", role: .destructive) { deleteEvent() }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This cannot be undone.")
+            }
         }
     }
 
@@ -73,6 +100,24 @@ struct EventDetailView: View {
     }
 
     // MARK: Subviews
+
+    private var ownerControls: some View {
+        HStack(spacing: 12) {
+            Button { showEdit = true } label: {
+                Label("Edit Event", systemImage: "pencil")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .tint(.blue)
+
+            Button(role: .destructive) { showDeleteConfirm = true } label: {
+                Label("Delete", systemImage: "trash")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .tint(.red)
+        }
+    }
 
     private var categoryHeader: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -212,6 +257,12 @@ struct EventDetailView: View {
     }
 
     // MARK: Actions
+
+    private func deleteEvent() {
+        savedEvents.filter { $0.eventID == event.id }.forEach { modelContext.delete($0) }
+        modelContext.delete(event)
+        dismiss()
+    }
 
     private func toggleStatus(_ status: SavedEventStatus) {
         if let existing = savedEvent {
