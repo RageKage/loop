@@ -23,8 +23,11 @@ final class DiscoverViewModel {
     var showThisWeek = false
     var selectedCategories: Set<EventCategory> = []
 
+    var searchText: String = ""
+
     var hasActiveFilters: Bool {
         showFreeOnly || showToday || showThisWeek || !selectedCategories.isEmpty
+            || !searchText.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
     // MARK: - Alert State
@@ -36,12 +39,7 @@ final class DiscoverViewModel {
     /// Returns events matching all active filters, sorted by distance from `location`.
     func filtered(_ events: [Event], near location: CLLocation) -> [Event] {
         // Remove expired community events before any user-facing filters.
-        // TODO: remove debug log after verifying Fix 2 (auto-expiry)
-        var result = events.filter {
-            let expired = EventTrustSignal.isExpired($0)
-            print("🕐 event '\($0.title)' isExpired=\(expired) endDate=\($0.endDate?.description ?? "nil")")
-            return !expired
-        }
+        var result = events.filter { !EventTrustSignal.isExpired($0) }
 
         // --- Filters ---
         if showFreeOnly {
@@ -58,6 +56,15 @@ final class DiscoverViewModel {
 
         if !selectedCategories.isEmpty {
             result = result.filter { selectedCategories.contains($0.categoryEnum) }
+        }
+
+        let query = searchText.trimmingCharacters(in: .whitespaces).lowercased()
+        if !query.isEmpty {
+            result = result.filter { event in
+                event.title.lowercased().contains(query) ||
+                event.locationName.lowercased().contains(query) ||
+                event.creatorDisplayName?.lowercased().contains(query) ?? false
+            }
         }
 
         // --- Sort by distance from user (or fallback) ---

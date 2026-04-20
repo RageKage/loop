@@ -16,6 +16,7 @@ struct SettingsView: View {
     @State private var showSignOutConfirmation = false
     #if DEBUG
     @State private var showConfidenceTest = false
+    @State private var showOnboardingResetAlert = false
     #endif
 
     private var apiKeyConfigured: Bool {
@@ -92,6 +93,12 @@ struct SettingsView: View {
                         simulatePastEvents()
                     }
                     .foregroundStyle(.orange)
+
+                    Button("Reset Onboarding (debug)") {
+                        OnboardingState.reset()
+                        showOnboardingResetAlert = true
+                    }
+                    .foregroundStyle(.orange)
                 } header: {
                     Text("Developer")
                 } footer: {
@@ -118,6 +125,13 @@ struct SettingsView: View {
             } message: {
                 Text(testResult ?? "")
             }
+            #if DEBUG
+            .alert("Onboarding Reset", isPresented: $showOnboardingResetAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Onboarding reset. Relaunch the app to see it.")
+            }
+            #endif
         }
     }
 

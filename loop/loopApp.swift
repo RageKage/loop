@@ -44,11 +44,19 @@ struct loopApp: App {
         GoogleSignInService.configure()
     }
 
+    @State private var showOnboarding = !OnboardingState.hasCompleted
+
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .onOpenURL { url in
                     _ = GoogleSignInService.shared.handleURL(url)
+                }
+                .fullScreenCover(isPresented: $showOnboarding) {
+                    OnboardingView {
+                        OnboardingState.markCompleted()
+                        showOnboarding = false
+                    }
                 }
         }
         .modelContainer(modelContainer)

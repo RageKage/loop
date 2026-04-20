@@ -18,6 +18,27 @@ struct DiscoverView: View {
     @State private var viewModel       = DiscoverViewModel()
     @State private var selectedEvent: Event?
 
+    private var searchEmptyState: some View {
+        VStack(spacing: 12) {
+            Spacer()
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 48))
+                .foregroundStyle(.secondary)
+            Text("No events match \"\(viewModel.searchText)\"")
+                .font(.headline)
+            Text("Try a different search or clear filters.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Button("Clear Search") {
+                viewModel.searchText = ""
+            }
+            .buttonStyle(.bordered)
+            Spacer()
+        }
+        .multilineTextAlignment(.center)
+        .padding()
+    }
+
     // Apply filters + sort on every render; cheap for the event counts we expect.
     private var displayedEvents: [Event] {
         viewModel.filtered(events, near: locationService.effectiveLocation)
@@ -44,11 +65,15 @@ struct DiscoverView: View {
                             userLocation: locationService.effectiveLocation
                         )
                     case .list:
-                        EventListView(
-                            events: displayedEvents,
-                            userLocation: locationService.effectiveLocation,
-                            selectedEvent: $selectedEvent
-                        )
+                        if displayedEvents.isEmpty && !viewModel.searchText.trimmingCharacters(in: .whitespaces).isEmpty {
+                            searchEmptyState
+                        } else {
+                            EventListView(
+                                events: displayedEvents,
+                                userLocation: locationService.effectiveLocation,
+                                selectedEvent: $selectedEvent
+                            )
+                        }
                     }
                 }
             }
@@ -66,6 +91,11 @@ struct DiscoverView: View {
                     .frame(width: 180)
                 }
             }
+            .searchable(
+                text: $viewModel.searchText,
+                placement: .navigationBarDrawer(displayMode: .always),
+                prompt: "Search events, venues, organizers"
+            )
             // Present event detail as a sheet; item-binding dismisses automatically
             // when selectedEvent is set back to nil.
             .sheet(item: $selectedEvent) { event in
