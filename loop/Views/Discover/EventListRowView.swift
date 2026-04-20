@@ -51,6 +51,18 @@ struct EventListRowView: View {
                     .background(event.isFree ? Color.green.opacity(0.12) : Color(.systemGray5))
                     .clipShape(Capsule())
 
+                // Trust badge
+                if EventTrustSignal.isVerified(event) {
+                    Label("Verified", systemImage: "checkmark.seal.fill")
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.blue)
+                } else {
+                    Text("Community")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+
                 // Distance
                 Text(event.distanceString(from: userLocation))
                     .font(.caption2)

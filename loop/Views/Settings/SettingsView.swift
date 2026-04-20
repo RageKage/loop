@@ -1,9 +1,12 @@
 import AuthenticationServices
 import GoogleSignIn
+import SwiftData
 import SwiftUI
 import UIKit
 
 struct SettingsView: View {
+    @Environment(\.modelContext) private var modelContext
+
     @State private var showAPIKeySetup = false
     @State private var apiKeyRefreshTrigger = 0
     @State private var isTesting = false
@@ -84,6 +87,11 @@ struct SettingsView: View {
                     NavigationLink("Force low-confidence scan test") {
                         CreateEventFormView(prefill: .confidenceTestFixture, onPublished: { _ in })
                     }
+
+                    Button("Simulate Past Event (debug)") {
+                        simulatePastEvents()
+                    }
+                    .foregroundStyle(.orange)
                     #endif
                 } header: {
                     Text("Developer")
@@ -212,6 +220,40 @@ struct SettingsView: View {
         print("🔑 Starts with sk-ant-: \(key.hasPrefix("sk-ant-"))")
         print("🔑 Contains whitespace/newlines: \(key.rangeOfCharacter(from: .whitespacesAndNewlines) != nil)")
     }
+
+    #if DEBUG
+    private func simulatePastEvents() {
+        let twoDaysAgo = Date.now.addingTimeInterval(-48 * 3600)
+        let community = Event(
+            title: "DEBUG Community Past Event",
+            eventDescription: "Simulated community event 2 days ago.",
+            startDate: twoDaysAgo,
+            endDate: twoDaysAgo.addingTimeInterval(3600),
+            locationName: "Test Location",
+            latitude: 44.9778, longitude: -93.2650,
+            organizerName: "Community Tester",
+            isApproved: true,
+            creatorType: "community"
+        )
+        let verified = Event(
+            title: "DEBUG Verified Past Event",
+            eventDescription: "Simulated verified event 2 days ago.",
+            startDate: twoDaysAgo,
+            endDate: twoDaysAgo.addingTimeInterval(3600),
+            locationName: "Test Location",
+            latitude: 44.9778, longitude: -93.2650,
+            organizerName: "Verified Tester",
+            isApproved: true,
+            creatorID: AuthService.shared.currentIdentity?.userID ?? "debug-user",
+            creatorType: "verified",
+            creatorDisplayName: AuthService.shared.currentIdentity?.displayName ?? "Debug Organizer"
+        )
+        modelContext.insert(community)
+        modelContext.insert(verified)
+        print("DEBUG community past event ID: \(community.id.uuidString)")
+        print("DEBUG verified past event ID:  \(verified.id.uuidString)")
+    }
+    #endif
 
     private func makePosterTestImage() -> Data {
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: 600, height: 400))

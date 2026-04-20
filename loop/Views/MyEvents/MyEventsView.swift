@@ -106,43 +106,48 @@ struct MyEventsView: View {
             if !upcoming.isEmpty {
                 Section("Upcoming") {
                     ForEach(upcoming) { event in
-                        Button { selectedEvent = event } label: {
-                            EventListRowView(event: event, userLocation: locationService.effectiveLocation)
-                        }
-                        .buttonStyle(.plain)
-                        .swipeActions(edge: .trailing) {
-                            if selectedTab == .hosting {
-                                Button(role: .destructive) {
-                                    eventPendingDelete = event
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                            }
-                        }
+                        eventRow(event)
                     }
                 }
             }
             if !past.isEmpty {
                 Section("Past") {
                     ForEach(past) { event in
-                        Button { selectedEvent = event } label: {
-                            EventListRowView(event: event, userLocation: locationService.effectiveLocation)
-                        }
-                        .buttonStyle(.plain)
-                        .swipeActions(edge: .trailing) {
-                            if selectedTab == .hosting {
-                                Button(role: .destructive) {
-                                    eventPendingDelete = event
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                            }
-                        }
+                        eventRow(event)
                     }
                 }
             }
         }
         .listStyle(.plain)
+    }
+
+    @ViewBuilder
+    private func eventRow(_ event: Event) -> some View {
+        let expired = selectedTab != .hosting && EventTrustSignal.isExpired(event)
+        Button { selectedEvent = event } label: {
+            VStack(alignment: .leading, spacing: 0) {
+                EventListRowView(event: event, userLocation: locationService.effectiveLocation)
+                if expired {
+                    Text("Expired")
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.orange)
+                        .padding(.leading, 56)
+                        .padding(.bottom, 2)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .opacity(expired ? 0.5 : 1.0)
+        .swipeActions(edge: .trailing) {
+            if selectedTab == .hosting {
+                Button(role: .destructive) {
+                    eventPendingDelete = event
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            }
+        }
     }
 
     private func deleteEvent(_ event: Event) {

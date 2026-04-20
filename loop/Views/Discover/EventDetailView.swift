@@ -14,6 +14,8 @@ struct EventDetailView: View {
     @Environment(\.dismiss)      private var dismiss
     @Query private var savedEvents: [SavedEvent]
 
+    @Environment(\.openURL) private var openURL
+
     @State private var addedToCalendar  = false
     @State private var showCalendarAlert = false
     @State private var calendarAlertMessage = ""
@@ -59,6 +61,8 @@ struct EventDetailView: View {
                     rsvpSection
                     divider
                     actionSection
+                    divider
+                    reportSection
                     Spacer(minLength: 32)
                 }
                 .padding()
@@ -139,12 +143,23 @@ struct EventDetailView: View {
                     .foregroundStyle(event.isFree ? Color.green : Color.primary)
             }
             Spacer()
-            Text("By \(event.organizerName)")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.trailing)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .trailing, spacing: 2) {
+                if EventTrustSignal.isVerified(event) {
+                    Label("By \(event.organizerName)", systemImage: "checkmark.seal.fill")
+                        .font(.caption)
+                        .foregroundStyle(.blue)
+                } else {
+                    Text("By \(event.organizerName)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text("Community post")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            .multilineTextAlignment(.trailing)
+            .lineLimit(2)
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -257,6 +272,36 @@ struct EventDetailView: View {
     }
 
     // MARK: Actions
+
+    private var reportSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if !isOwner {
+                Button { openReport() } label: {
+                    Text("Report this event")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .underline()
+                }
+                .buttonStyle(.plain)
+            }
+            Text(EventTrustSignal.isVerified(event)
+                ? "This event was posted by a verified organizer who can edit or remove it."
+                : "This event was shared by a community member. Details may have changed since posting. Report if inaccurate.")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func openReport() {
+        let subject = "Report: \(event.title)"
+        let body = "Event ID: \(event.id.uuidString)\nEvent: \(event.title)\n\n[Describe the issue below]"
+        guard let encodedSubject = subject.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let encodedBody = body.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: "mailto:report@loop.app?subject=\(encodedSubject)&body=\(encodedBody)")
+        else { return }
+        openURL(url)
+    }
 
     private func deleteEvent() {
         savedEvents.filter { $0.eventID == event.id }.forEach { modelContext.delete($0) }
