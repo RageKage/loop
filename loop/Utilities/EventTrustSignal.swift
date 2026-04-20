@@ -9,7 +9,7 @@ struct EventTrustSignal {
     static func isExpired(_ event: Event) -> Bool {
         guard event.creatorType == EventCreatorType.community.rawValue else { return false }
         let anchor = event.endDate ?? event.startDate
-        return anchor.addingTimeInterval(48 * 3600) < Date.now
+        return anchor.addingTimeInterval(24 * 3600) < Date.now
     }
 
     static func isVerified(_ event: Event) -> Bool {

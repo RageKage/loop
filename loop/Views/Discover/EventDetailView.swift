@@ -14,13 +14,12 @@ struct EventDetailView: View {
     @Environment(\.dismiss)      private var dismiss
     @Query private var savedEvents: [SavedEvent]
 
-    @Environment(\.openURL) private var openURL
-
     @State private var addedToCalendar  = false
     @State private var showCalendarAlert = false
     @State private var calendarAlertMessage = ""
     @State private var showEdit = false
     @State private var showDeleteConfirm = false
+    @State private var showReport = false
 
     // MARK: Computed
 
@@ -83,6 +82,9 @@ struct EventDetailView: View {
                 NavigationStack {
                     EditEventFormView(event: event, onSaved: { _ in })
                 }
+            }
+            .sheet(isPresented: $showReport) {
+                ReportEventSheet(event: event)
             }
             .confirmationDialog(
                 "Delete this event?",
@@ -276,7 +278,7 @@ struct EventDetailView: View {
     private var reportSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             if !isOwner {
-                Button { openReport() } label: {
+                Button { showReport = true } label: {
                     Text("Report this event")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
@@ -291,16 +293,6 @@ struct EventDetailView: View {
                 .foregroundStyle(.tertiary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-    }
-
-    private func openReport() {
-        let subject = "Report: \(event.title)"
-        let body = "Event ID: \(event.id.uuidString)\nEvent: \(event.title)\n\n[Describe the issue below]"
-        guard let encodedSubject = subject.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let encodedBody = body.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let url = URL(string: "mailto:report@loop.app?subject=\(encodedSubject)&body=\(encodedBody)")
-        else { return }
-        openURL(url)
     }
 
     private func deleteEvent() {

@@ -36,7 +36,12 @@ final class DiscoverViewModel {
     /// Returns events matching all active filters, sorted by distance from `location`.
     func filtered(_ events: [Event], near location: CLLocation) -> [Event] {
         // Remove expired community events before any user-facing filters.
-        var result = events.filter { !EventTrustSignal.isExpired($0) }
+        // TODO: remove debug log after verifying Fix 2 (auto-expiry)
+        var result = events.filter {
+            let expired = EventTrustSignal.isExpired($0)
+            print("🕐 event '\($0.title)' isExpired=\(expired) endDate=\($0.endDate?.description ?? "nil")")
+            return !expired
+        }
 
         // --- Filters ---
         if showFreeOnly {

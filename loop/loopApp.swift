@@ -11,6 +11,7 @@ struct loopApp: App {
             Event.self,
             SavedEvent.self,
             PendingScan.self,
+            EventReport.self,
         ])
 
         // Phase 1: plain on-disk store, no CloudKit sync.

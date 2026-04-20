@@ -258,8 +258,8 @@ final class CreateEventViewModel {
         title = p.title ?? ""
         eventDescription = p.description ?? ""
         if let raw = p.category, let cat = EventCategory(rawValue: raw) { category = cat }
-        if let date = Self.parseISO(p.startISO) { startDate = date }
-        if let date = Self.parseISO(p.endISO) {
+        if let date = Self.parseISODate(p.startISO) { startDate = date }
+        if let date = Self.parseISODate(p.endISO) {
             endDate = date
             hasEndDate = true
         }
@@ -341,14 +341,27 @@ final class CreateEventViewModel {
         event.organizerContact = organizerContact.isEmpty ? nil : organizerContact
     }
 
-    private static func parseISO(_ string: String?) -> Date? {
-        guard let string else { return nil }
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withTimeZone, .withColonSeparatorInTimeZone]
-        if let date = formatter.date(from: string) { return date }
-        formatter.formatOptions.insert(.withFractionalSeconds)
-        if let date = formatter.date(from: string) { return date }
-        print("⚠️ Failed to parse ISO date: \(string)")
+    private static func parseISODate(_ string: String?) -> Date? {
+        guard let string = string?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !string.isEmpty else { return nil }
+
+        let withTimezone = ISO8601DateFormatter()
+        withTimezone.formatOptions = [.withInternetDateTime, .withTimeZone, .withColonSeparatorInTimeZone]
+        if let date = withTimezone.date(from: string) { return date }
+
+        withTimezone.formatOptions.insert(.withFractionalSeconds)
+        if let date = withTimezone.date(from: string) { return date }
+
+        let zFormatter = ISO8601DateFormatter()
+        zFormatter.formatOptions = [.withInternetDateTime]
+        if let date = zFormatter.date(from: string) { return date }
+
+        let dateOnly = DateFormatter()
+        dateOnly.dateFormat = "yyyy-MM-dd"
+        dateOnly.timeZone = TimeZone(identifier: "America/Chicago")
+        if let date = dateOnly.date(from: string) { return date }
+
+        print("⚠️ parseISODate failed for input: '\(string)'")
         return nil
     }
 
@@ -356,6 +369,10 @@ final class CreateEventViewModel {
 
     /// Returns true when sign-in should be required before publish.
     /// Phase 4b-i: always false — anonymous publish is allowed from all paths.
+    var prefillDateIsPast: Bool {
+        prefillConfidence != nil && startDate < Date()
+    }
+
     var requiresAuthForPublish: Bool { false }
 
     // MARK: - Build

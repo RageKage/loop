@@ -221,11 +221,19 @@ struct CreateEventFormView: View {
     @ViewBuilder
     private var dateSection: some View {
         Section {
-            // Start date — must be in the future
+            if viewModel.prefillDateIsPast {
+                Label(
+                    "This poster's date is in the past. Update the date before publishing, or the poster may be outdated.",
+                    systemImage: "exclamationmark.triangle.fill"
+                )
+                .font(.caption)
+                .foregroundStyle(.yellow)
+                .symbolRenderingMode(.multicolor)
+            }
+
             DatePicker(
                 "Starts",
                 selection: $viewModel.startDate,
-                in: Date.now...,
                 displayedComponents: [.date, .hourAndMinute]
             )
             .confidence(viewModel.confidenceLevel(for: "date"))

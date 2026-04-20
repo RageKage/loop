@@ -21,32 +21,25 @@ entitlements) but currently wrapped in `#if false` in SettingsView and
 CreateEventFormView. Re-enable when upgrading to the $99/yr Apple Developer Program.
 Also required for CloudKit sync (Phase 4c) and Push Notifications.
 
+## Phase 4-fixes-a shipped
+
+- In-app Report sheet replaces mailto flow ✅
+- Community post auto-expiry confirmed working via logs ✅
+- Past-date warning banner on AI-extracted events ✅
+
+### Past-date posters silently snap to today (now addressed in Phase 4-fixes-a)
+When an AI-scanned poster has a date in the past, the DatePicker's future-only range caused the startDate to silently reset to today. Fixed in Phase 4-fixes-a by removing the range constraint, adding a visible "date is in the past" warning banner, and keeping Publish-time validation.
+
+## Still deferred
+
+- **Confidence prompt tuning** — Haiku returns `"high"` on all fields even for degraded/low-quality poster images. Needs prompt tuning in `ClaudeVisionService` extraction prompt. Consider adding explicit rules like "use 'low' if you're inferring a field rather than reading it directly."
+- **SF Symbol `calendar.clock` warning** — Should be `calendar.badge.clock`. Console warning only, not user-visible. Grep the project for `calendar.clock` to locate.
+- **🟡 Debug log cleanup** — Leftover from confidence-highlight diagnostics. Should be removed after verification. Files: `CreateEventViewModel.swift`, `ClaudeVisionService.swift`, `ConfidenceStyle.swift`, `DiscoverViewModel.swift` (Fix 2 expiry log).
+- **#if DEBUG gate on Developer section** — Developer settings are currently always visible; should be wrapped in `#if DEBUG`.
+
 ## Phase 4a — Poster Scanner
 
-1. **ISO date parsing drops timezone-offset dates**
-   - Claude returns e.g. `"2025-07-28T22:00:00-05:00"`, form lands on today instead
-   - Likely `ISO8601DateFormatter.formatOptions` missing `.withTimeZone` / `.withColonSeparatorInTimeZone`
-   - Fix attempted in `CreateEventViewModel.parseISO` but still failing
-   - Severity: HIGH — causes silent data corruption on scanned events
-   - Files: `loop/ViewModels/CreateEventViewModel.swift`
-
-2. **🟡 debug logs still print**
-   - Left over from confidence-highlight diagnostics
-   - Should have been removed after verification
-   - Files: `CreateEventViewModel.swift`, `ClaudeVisionService.swift`, `ConfidenceStyle.swift`
-
-3. **SF Symbol warning: `calendar.clock` not found**
-   - Should be `calendar.badge.clock`
-   - Console warning only, not user-visible
-   - Grep the project for `calendar.clock` to locate
-
-4. **Confidence scoring too permissive**
-   - Haiku returns `"high"` on all fields even for degraded/low-quality poster images
-   - Confidence highlighting never fires in real use
-   - Needs prompt tuning in `ClaudeVisionService` extraction prompt
-   - Consider: add explicit rules like "use 'low' if you're inferring a field rather than reading it directly"
-
-5. **No future-date guard on extracted events**
+1. **No future-date guard on extracted events**
    - If poster says "July 28" with no year, Claude picks 2025 (past)
    - Should default to next future occurrence when year is ambiguous
    - Fix location: extraction prompt in `ClaudeVisionService`
