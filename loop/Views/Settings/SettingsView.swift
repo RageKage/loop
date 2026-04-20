@@ -38,6 +38,7 @@ struct SettingsView: View {
                         .foregroundStyle(.secondary)
                 }
 
+                #if DEBUG
                 Section {
                     Button {
                         showAPIKeySetup = true
@@ -83,7 +84,6 @@ struct SettingsView: View {
                     }
                     .foregroundStyle(.red)
 
-                    #if DEBUG
                     NavigationLink("Force low-confidence scan test") {
                         CreateEventFormView(prefill: .confidenceTestFixture, onPublished: { _ in })
                     }
@@ -92,13 +92,13 @@ struct SettingsView: View {
                         simulatePastEvents()
                     }
                     .foregroundStyle(.orange)
-                    #endif
                 } header: {
                     Text("Developer")
                 } footer: {
                     Text("Required for poster scanning. Quota resets 24 hours after your first scan of the day.")
                 }
                 .onAppear { rateLimiter = RateLimiter() }
+                #endif
 
                 Section("About") {
                     LabeledContent("App", value: "Loop")

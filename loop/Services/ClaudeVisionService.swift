@@ -52,12 +52,18 @@ enum ClaudeVisionService {
       "confidence": { "title": "high|medium|low", "date": "high|medium|low", "location": "high|medium|low", "price": "high|medium|low" }
     }
 
+    Confidence scoring (be CONSERVATIVE, not generous):
+    - "high": The field is clearly readable on the poster with no ambiguity. A specific date and time are printed. A specific venue name or address is shown. A price is explicitly stated.
+    - "medium": The field is readable but required some interpretation. A date was shown without a year so you assumed the next occurrence. A venue name was shown but no address. A price was implied but not explicitly stated.
+    - "low": You inferred this field from context rather than reading it directly. A category you assigned based on the event's general vibe. A time like "evening" with no specific hour. An organizer name that wasn't explicitly credited.
+
+    Default to "medium" when in doubt. Only return "high" when the poster text is unambiguous. If you're uncertain, choose "low".
+
     Rules:
     - If the image is not an event poster (random photo, meme, document), return {"is_event_poster": false} and null for everything else.
     - If the event appears political, protest-related, or hate-based, return {"refused": true, "refusal_reason": "out_of_scope"} and null for everything else. Loop is for community gatherings, not political organizing.
     - Dates must be ISO 8601 with timezone. If no year is visible, assume the next occurrence from today. If no timezone is shown, assume America/Chicago.
     - Never guess. If a field is unclear, return null for that field rather than inventing a value.
-    - Mark confidence "low" for any field you're uncertain about — the user will double-check these.
     - Leave address null unless a full street address is visible on the poster. Location name alone is fine.
     - If the poster shows "Free" or has no price mentioned at all, is_free = true, price_usd = null.
     - If a price is shown, is_free = false, price_usd = the numeric value.
