@@ -30,6 +30,12 @@ final class DiscoverViewModel {
             || !searchText.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
+    /// True when date-bucket grouping should be shown in the list.
+    /// Grouping is suppressed when a date filter chip or search is already active.
+    var shouldGroupByDate: Bool {
+        !showToday && !showThisWeek && searchText.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
     // MARK: - Alert State
 
     var showLocationDeniedAlert = false

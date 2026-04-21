@@ -41,6 +41,11 @@ struct loopApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
 
+        // Seed sample events once on first launch. Running here (not in a view's
+        // onAppear) means a debug Clear All Events won't trigger a re-seed on the
+        // next tab switch — the call site fires exactly once per app launch.
+        SampleEventSeeder.seedIfNeeded(context: ModelContext(modelContainer))
+
         GoogleSignInService.configure()
     }
 

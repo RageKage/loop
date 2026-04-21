@@ -17,6 +17,7 @@ struct SettingsView: View {
     #if DEBUG
     @State private var showConfidenceTest = false
     @State private var showOnboardingResetAlert = false
+    @State private var showClearAllEventsConfirmation = false
     #endif
 
     private var apiKeyConfigured: Bool {
@@ -99,6 +100,28 @@ struct SettingsView: View {
                         showOnboardingResetAlert = true
                     }
                     .foregroundStyle(.orange)
+
+                    Button("Clear All Events (debug)", role: .destructive) {
+                        showClearAllEventsConfirmation = true
+                    }
+                    .confirmationDialog(
+                        "Delete all events and pending scans? This cannot be undone.",
+                        isPresented: $showClearAllEventsConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button("Confirm", role: .destructive) {
+                            try? modelContext.delete(model: Event.self)
+                            try? modelContext.delete(model: PendingScan.self)
+                            try? modelContext.delete(model: SavedEvent.self)
+                            SampleEventSeeder.resetSeedFlag()
+                        }
+                        Button("Cancel", role: .cancel) {}
+                    }
+
+                    Button("Reseed Sample Events (debug)") {
+                        SampleEventSeeder.reseed(context: modelContext)
+                    }
+                    .foregroundStyle(.tint)
                 } header: {
                     Text("Developer")
                 } footer: {

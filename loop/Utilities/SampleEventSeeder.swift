@@ -11,11 +11,36 @@ import SwiftData
 @MainActor
 enum SampleEventSeeder {
 
+    private static let seededKey = "loop.hasSeedRun"
+
+    /// Seeds sample events if the store is empty and we haven't seeded before.
+    /// Safe to call multiple times — no-op after the first successful seed.
     static func seedIfNeeded(context: ModelContext) {
+        guard !UserDefaults.standard.bool(forKey: seededKey) else { return }
         let descriptor = FetchDescriptor<Event>()
-        guard (try? context.fetchCount(descriptor)) == 0 else { return }
+        let count = (try? context.fetchCount(descriptor)) ?? 0
+        guard count == 0 else {
+            // Events exist from another source; mark as done so we stop checking.
+            UserDefaults.standard.set(true, forKey: seededKey)
+            return
+        }
         sampleEvents.forEach { context.insert($0) }
         try? context.save()
+        UserDefaults.standard.set(true, forKey: seededKey)
+    }
+
+    /// Inserts all sample events unconditionally. Used by the debug Reseed button.
+    static func reseed(context: ModelContext) {
+        sampleEvents.forEach { context.insert($0) }
+        try? context.save()
+        UserDefaults.standard.set(true, forKey: seededKey)
+    }
+
+    /// Clears the seeding flag. Used by Clear All Events so that the app is in a
+    /// truly clean state; the flag is NOT auto-cleared on the next Discover appear
+    /// because seedIfNeeded is only called from loopApp.init (once per launch).
+    static func resetSeedFlag() {
+        UserDefaults.standard.removeObject(forKey: seededKey)
     }
 
     // MARK: - Helpers
