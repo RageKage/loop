@@ -69,7 +69,14 @@ struct EventDetailView: View {
             .navigationTitle(event.title)
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    ShareLink(
+                        item: shareText,
+                        subject: Text(event.title),
+                        message: Text("Check out this event on Loop")
+                    ) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
                     Button("Done") { dismiss() }
                 }
             }
@@ -293,6 +300,46 @@ struct EventDetailView: View {
                 .foregroundStyle(.tertiary)
                 .fixedSize(horizontal: false, vertical: true)
         }
+    }
+
+    // MARK: Share text
+
+    private var shareText: String {
+        var lines: [String] = [event.title]
+
+        // Date / time
+        if let end = event.endDate {
+            let dateStr   = event.startDate.formatted(date: .abbreviated, time: .omitted)
+            let startTime = event.startDate.formatted(date: .omitted,     time: .shortened)
+            let endTime   = end.formatted(          date: .omitted,       time: .shortened)
+            lines.append("📅 \(dateStr) from \(startTime) to \(endTime)")
+        } else {
+            lines.append("📅 \(event.startDate.formatted(date: .abbreviated, time: .shortened))")
+        }
+
+        // Recurrence
+        if let rule = event.recurrenceRule, let display = rule.rruleDisplayString {
+            lines.append(display)
+        }
+
+        // Location
+        lines.append("📍 \(event.locationName)")
+
+        // Price
+        if event.isFree {
+            lines.append("✨ Free")
+        } else if let price = event.price {
+            lines.append("💵 $\(Int(price))")
+        }
+
+        // Description — omit entirely if empty
+        let desc = event.eventDescription.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !desc.isEmpty { lines.append(desc) }
+
+        // TODO: deep link — add "https://loop.app/event/\(event.id)" when backend is live
+        lines.append("Shared via Loop")
+
+        return lines.joined(separator: "\n")
     }
 
     private func deleteEvent() {
