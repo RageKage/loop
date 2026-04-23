@@ -1,3 +1,11 @@
+# Developer Context
+> Full personal knowledge base: ~/Desktop/niman_brain
+> Read `Me/Context.md` for background on who I am.
+> Read `Me/Stack.md` for tools and preferences.
+> Read `Projects/Loop.md` for high-level project summary.
+
+---
+
 # Loop — iOS event discovery app
 
 ## What Loop is
