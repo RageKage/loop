@@ -3,9 +3,12 @@ import GoogleSignIn
 import SwiftData
 import SwiftUI
 import UIKit
+import UserNotifications
 
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
+
+    private let notificationService = NotificationService.shared
 
     @State private var showAPIKeySetup = false
     @State private var apiKeyRefreshTrigger = 0
@@ -18,6 +21,8 @@ struct SettingsView: View {
     @State private var showConfidenceTest = false
     @State private var showOnboardingResetAlert = false
     @State private var showClearAllEventsConfirmation = false
+    @State private var showNotifDebugAlert = false
+    @State private var notifDebugMessage = ""
     #endif
 
     private var apiKeyConfigured: Bool {
@@ -36,8 +41,20 @@ struct SettingsView: View {
                 }
 
                 Section("Notifications") {
-                    Label("Notification Preferences", systemImage: "bell")
-                        .foregroundStyle(.secondary)
+                    NavigationLink {
+                        NotificationPreferencesView()
+                    } label: {
+                        HStack {
+                            Label("Notification Preferences", systemImage: "bell")
+                            Spacer()
+                            Text(notificationService.authorizationStatus == .authorized ? "On" : "Off")
+                                .font(.subheadline)
+                                .foregroundStyle(
+                                    notificationService.authorizationStatus == .authorized
+                                        ? Color.primary : Color.secondary
+                                )
+                        }
+                    }
                 }
 
                 #if DEBUG
@@ -122,6 +139,23 @@ struct SettingsView: View {
                         SampleEventSeeder.reseed(context: modelContext)
                     }
                     .foregroundStyle(.tint)
+
+                    Button("Cancel All Notifications (debug)") {
+                        NotificationService.shared.cancelAllPending()
+                        notifDebugMessage = "All pending notifications cleared"
+                        showNotifDebugAlert = true
+                    }
+                    .foregroundStyle(.red)
+
+                    Button("Show Pending Count (debug)") {
+                        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+                            let n = requests.count
+                            Task { @MainActor in
+                                notifDebugMessage = "\(n) pending notification\(n == 1 ? "" : "s")"
+                                showNotifDebugAlert = true
+                            }
+                        }
+                    }
                 } header: {
                     Text("Developer")
                 } footer: {
@@ -153,6 +187,11 @@ struct SettingsView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text("Onboarding reset. Relaunch the app to see it.")
+            }
+            .alert("Notifications", isPresented: $showNotifDebugAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(notifDebugMessage)
             }
             #endif
         }

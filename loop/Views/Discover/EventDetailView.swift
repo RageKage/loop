@@ -351,12 +351,24 @@ struct EventDetailView: View {
     private func toggleStatus(_ status: SavedEventStatus) {
         if let existing = savedEvent {
             if existing.statusEnum == status {
-                modelContext.delete(existing)          // tap same button → remove
+                if status == .going {
+                    NotificationService.shared.cancelRSVPReminder(for: event.id)
+                }
+                modelContext.delete(existing)
             } else {
-                existing.status = status.rawValue      // tap other button → switch
+                if existing.statusEnum == .going {
+                    NotificationService.shared.cancelRSVPReminder(for: event.id)
+                }
+                existing.status = status.rawValue
+                if status == .going {
+                    NotificationService.shared.scheduleRSVPReminder(for: event)
+                }
             }
         } else {
             modelContext.insert(SavedEvent(eventID: event.id, status: status.rawValue))
+            if status == .going {
+                NotificationService.shared.scheduleRSVPReminder(for: event)
+            }
         }
     }
 

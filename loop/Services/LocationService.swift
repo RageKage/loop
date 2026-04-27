@@ -14,6 +14,8 @@ import Observation
 @Observable
 final class LocationService: NSObject {
 
+    static let shared = LocationService()
+
     // MARK: - Observed State
 
     var authorizationStatus: CLAuthorizationStatus = .notDetermined

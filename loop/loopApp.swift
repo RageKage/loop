@@ -54,6 +54,7 @@ struct loopApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .task { await NotificationService.shared.refreshAuthorizationStatus() }
                 .onOpenURL { url in
                     _ = GoogleSignInService.shared.handleURL(url)
                 }

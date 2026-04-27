@@ -97,14 +97,20 @@ struct CreateEventFormView: View {
 
     private var publishButton: some View {
         Button(viewModel.isEditMode ? "Save Changes" : "Publish") {
+            print("🔔 Publish tapped: isValid=\(viewModel.isValid) isEditMode=\(viewModel.isEditMode)")
             viewModel.publishAttempted = true
-            guard viewModel.isValid else { return }
+            guard viewModel.isValid else { print("🔔 ❌ isValid=false, returning early"); return }
             if viewModel.isEditMode {
                 viewModel.saveChanges()
                 onPublished(viewModel.title.trimmingCharacters(in: .whitespaces))
             } else {
                 let event = viewModel.buildEvent()
                 modelContext.insert(event)
+                print("🔔 calling scheduleCategoryNotification after publish")
+                NotificationService.shared.scheduleCategoryNotification(
+                    for: event,
+                    userLocation: LocationService.shared.userLocation
+                )
                 onPublished(event.title)
             }
             dismiss()
@@ -208,7 +214,13 @@ struct CreateEventFormView: View {
     @ViewBuilder
     private var categorySection: some View {
         Section {
-            Picker("Category", selection: $viewModel.category) {
+            // Explicit Binding avoids a navigation-Picker pop-back quirk where
+            // $viewModel.category's dynamic-member-lookup setter isn't reliably
+            // called for enum types on @Observable classes held in @State.
+            Picker("Category", selection: Binding(
+                get: { viewModel.category },
+                set: { viewModel.category = $0 }
+            )) {
                 ForEach(EventCategory.allCases, id: \.self) { cat in
                     Label(cat.displayName, systemImage: cat.systemImage).tag(cat)
                 }
@@ -367,6 +379,11 @@ struct CreateEventFormView: View {
             }
             .frame(height: 200)
             .clipShape(RoundedRectangle(cornerRadius: 10))
+            // Register latitude/longitude in the standard @ViewBuilder tracking context.
+            // MapContentBuilder closures may not participate in @Observable tracking,
+            // so the annotation won't update unless we also read the properties here.
+            .onChange(of: viewModel.latitude)  { _, _ in }
+            .onChange(of: viewModel.longitude) { _, _ in }
             // Flush the map to the cell edges for a wider feel
             .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 8, trailing: 16))
         } header: {
@@ -463,6 +480,7 @@ struct CreateEventFormView: View {
             }
 
             print("[Geocoder] Result: \(location.coordinate.latitude), \(location.coordinate.longitude)")
+            print("🗺 geocoded '\(trimmed)' → \(location.coordinate)")
             viewModel.latitude  = location.coordinate.latitude
             viewModel.longitude = location.coordinate.longitude
             withAnimation {
