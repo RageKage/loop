@@ -1,0 +1,281 @@
+{
+  "" : {
+    "const-values" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/loop-primary.swiftconstvalues",
+    "dependencies" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/loop-primary.d",
+    "diagnostics" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/loop-primary.dia",
+    "emit-module-dependencies" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/loop-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/loop-primary-emit-module.dia",
+    "pch" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/loop-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/loop-primary.swiftdeps"
+  },
+  "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/GeneratedAssetSymbols.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/ContentView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ContentView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Models/AuthIdentity.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/AuthIdentity.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/AuthIdentity.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/AuthIdentity.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Models/Event+Location.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/Event+Location.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/Event+Location.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/Event+Location.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Models/Event.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/Event.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/Event.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/Event.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Models/EventReport.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventReport.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventReport.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventReport.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Models/ExtractedEvent.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ExtractedEvent.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ExtractedEvent.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ExtractedEvent.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Models/PendingScan.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PendingScan.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PendingScan.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PendingScan.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Models/SavedEvent.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SavedEvent.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SavedEvent.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SavedEvent.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Services/AuthService.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/AuthService.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/AuthService.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/AuthService.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Services/ClaudeVisionService.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ClaudeVisionService.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ClaudeVisionService.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ClaudeVisionService.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Services/DevAPIKey.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/DevAPIKey.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/DevAPIKey.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/DevAPIKey.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Services/GoogleSignInService.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/GoogleSignInService.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/GoogleSignInService.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/GoogleSignInService.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Services/KeychainService.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/KeychainService.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/KeychainService.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/KeychainService.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Services/LocationService.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/LocationService.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/LocationService.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/LocationService.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Services/NetworkMonitor.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/NetworkMonitor.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/NetworkMonitor.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/NetworkMonitor.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Services/NotificationService.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/NotificationService.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/NotificationService.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/NotificationService.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Services/OnboardingState.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/OnboardingState.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/OnboardingState.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/OnboardingState.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Services/RateLimiter.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/RateLimiter.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/RateLimiter.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/RateLimiter.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Utilities/ConfidenceStyle.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ConfidenceStyle.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ConfidenceStyle.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ConfidenceStyle.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Utilities/DesignTokens.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/DesignTokens.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/DesignTokens.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/DesignTokens.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Utilities/EventCategory+UI.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventCategory+UI.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventCategory+UI.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventCategory+UI.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Utilities/EventTrustSignal.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventTrustSignal.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventTrustSignal.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventTrustSignal.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Utilities/RRuleFormatter.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/RRuleFormatter.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/RRuleFormatter.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/RRuleFormatter.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Utilities/SampleEventSeeder.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SampleEventSeeder.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SampleEventSeeder.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SampleEventSeeder.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Utilities/ToastModifier.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ToastModifier.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ToastModifier.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ToastModifier.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/ViewModels/CreateEventViewModel.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/CreateEventViewModel.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/CreateEventViewModel.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/CreateEventViewModel.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/ViewModels/DiscoverViewModel.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/DiscoverViewModel.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/DiscoverViewModel.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/DiscoverViewModel.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Auth/SignInWithAppleView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SignInWithAppleView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SignInWithAppleView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SignInWithAppleView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Auth/SignInWithGoogleView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SignInWithGoogleView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SignInWithGoogleView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SignInWithGoogleView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Create/CreateEntryView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/CreateEntryView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/CreateEntryView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/CreateEntryView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Create/CreateEventFormView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/CreateEventFormView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/CreateEventFormView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/CreateEventFormView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Create/CreateView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/CreateView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/CreateView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/CreateView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Create/EditEventFormView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EditEventFormView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EditEventFormView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EditEventFormView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Create/PendingScansView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PendingScansView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PendingScansView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PendingScansView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Create/PosterCaptureView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PosterCaptureView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PosterCaptureView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PosterCaptureView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Create/PosterScanCoordinator.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PosterScanCoordinator.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PosterScanCoordinator.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PosterScanCoordinator.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Create/PrivacyDisclosureView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PrivacyDisclosureView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PrivacyDisclosureView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/PrivacyDisclosureView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Create/ScanningView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ScanningView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ScanningView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ScanningView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Discover/DiscoverView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/DiscoverView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/DiscoverView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/DiscoverView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Discover/EventDetailView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventDetailView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventDetailView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventDetailView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Discover/EventListRowView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventListRowView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventListRowView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventListRowView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Discover/EventListView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventListView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventListView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventListView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Discover/EventMapView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventMapView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventMapView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventMapView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Discover/EventPinView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventPinView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventPinView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/EventPinView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Discover/FilterBarView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/FilterBarView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/FilterBarView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/FilterBarView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/MyEvents/MyEventsView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/MyEventsView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/MyEventsView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/MyEventsView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Onboarding/OnboardingView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/OnboardingView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/OnboardingView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/OnboardingView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Settings/APIKeySetupView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/APIKeySetupView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/APIKeySetupView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/APIKeySetupView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Settings/NotificationPreferencesView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/NotificationPreferencesView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/NotificationPreferencesView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/NotificationPreferencesView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Settings/SettingsView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SettingsView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SettingsView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/SettingsView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/Shared/ReportEventSheet.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ReportEventSheet.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ReportEventSheet.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/ReportEventSheet.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/Views/You/YouView.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/YouView.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/YouView.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/YouView.o"
+  },
+  "/Users/fadel/Documents/Developer/loop/loop/loopApp.swift" : {
+    "index-unit-output-path" : "/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/loopApp.o",
+    "llvm-bc" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/loopApp.bc",
+    "object" : "/Users/fadel/Documents/Developer/loop/build/loop.build/Release-iphonesimulator/loop.build/Objects-normal/arm64/loopApp.o"
+  }
+}

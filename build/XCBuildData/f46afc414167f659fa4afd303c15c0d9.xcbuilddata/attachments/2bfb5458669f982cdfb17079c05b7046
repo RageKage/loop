@@ -1,0 +1,4 @@
+module AppAuth {
+umbrella "/Users/fadel/Library/Developer/Xcode/DerivedData/loop-cxsqqvwweagbrugdpdfrcgfcryez/SourcePackages/checkouts/AppAuth-iOS/Sources/AppAuth"
+export *
+}

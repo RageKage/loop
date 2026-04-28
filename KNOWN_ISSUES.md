@@ -2,6 +2,34 @@
 
 Tracking bugs we've flagged but deferred. Not blocking for current phase.
 
+## Phase 5-c notifications need real-device verification
+
+**Status:** Code shipped, simulator testing inconclusive.
+
+**What works:**
+- NotificationService scheduling logic compiles, prints diagnostic logs at scheduling time
+- Wired to publish flow (CreateEventFormView publishButton line 108)
+- Permission request flow works in NotificationPreferencesView
+- Category subscription persistence via UserDefaults works
+- RSVP scheduling logic exists and triggers on "I'm Going"
+
+**What's unverified:**
+- Whether banners actually fire on real iOS device when scheduled
+- Whether 1-hour RSVP reminders deliver at the right time
+- Whether the 10-mile radius distance check works correctly when userLocation is populated
+
+**Why deferred:**
+- Simulator notification delivery is notoriously flaky on iOS 26
+- Paid Apple Developer Program ($99/yr) needed for real-device install
+- During testing, console regression occurred after applying category Binding(get:set:) fix and userLocation graceful fallback — root cause unclear without fresh debugging session
+
+**Next steps when reopening:**
+1. Fresh clean build (Cmd+Shift+K then rebuild)
+2. Test on real iPhone via TestFlight or direct install
+3. Verify pending count increments on Settings → Developer → Show Pending Count
+4. Verify actual banner delivery
+5. If broken, the diagnostic 🔔 prints in NotificationService and CreateEventFormView publishButton are still in place to debug from
+
 ## Deferred Features
 
 ### Anonymous RSVPs are device-local
