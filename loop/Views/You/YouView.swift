@@ -9,13 +9,14 @@ struct YouView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    profileCard
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.clear)
-                        .padding(.vertical, 24)
+                // 1. Dynamic Header Section based on Auth State
+                if let identity = auth.currentIdentity {
+                    signedInSection(identity: identity)
+                } else {
+                    communityMemberSection
                 }
 
+                // 2. Activity Section
                 Section("Activity") {
                     NavigationLink {
                         MyEventsView()
@@ -30,6 +31,7 @@ struct YouView: View {
                     }
                 }
 
+                // 3. App Settings Section
                 Section("App") {
                     NavigationLink {
                         SettingsView()
@@ -44,18 +46,19 @@ struct YouView: View {
                     }
                 }
 
+                // 4. Centered Destructive Action
                 if auth.currentIdentity != nil {
                     Section {
                         Button(role: .destructive) {
                             showSignOutConfirmation = true
                         } label: {
-                            Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
+                            Text("Sign Out")
+                                .frame(maxWidth: .infinity, alignment: .center)
                         }
                     }
                 }
             }
-            .navigationTitle("")
-            .navigationBarTitleDisplayMode(.inline)
+             // Restored the native iOS large title
             .sheet(isPresented: $showSignInSheet) {
                 signInSheet
             }
@@ -75,66 +78,91 @@ struct YouView: View {
         }
     }
 
-    @ViewBuilder
-    private var profileCard: some View {
-        if let identity = auth.currentIdentity {
-            signedInCard(identity: identity)
-        } else {
-            Button {
-                showSignInSheet = true
-            } label: {
-                guestCard
+    // MARK: - Native iOS Profile Sections
+
+    private var communityMemberSection: some View {
+        Section {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack(spacing: 16) {
+                    Image(systemName: "person.2.circle.fill")
+                        .font(.system(size: 46))
+                        .foregroundStyle(.tertiary, .tint)
+                        .symbolRenderingMode(.palette)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Community Member")
+                            .font(.headline)
+                        Text("Browsing anonymously")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                
+                Text("Want to host official events? Sign in as a verified organizer to create and manage your community presence.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                
+                Button {
+                    showSignInSheet = true
+                } label: {
+                    Text("Sign in as Organizer")
+                        .font(.headline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.regular)
+                .padding(.top, 4)
             }
-            .buttonStyle(.plain)
+            .padding(.vertical, 6)
         }
     }
 
-    private var guestCard: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "person.crop.circle.dashed")
-                .font(.system(size: 64))
-                .foregroundStyle(.secondary)
-            Text("Guest")
-                .font(.body.weight(.semibold))
-            Text("Tap to sign in")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+    private func signedInSection(identity: AuthIdentity) -> some View {
+        Section {
+            HStack(spacing: 16) {
+                Image(systemName: "checkmark.seal.fill")
+                    .font(.system(size: 46))
+                    .foregroundStyle(.white, .blue)
+                    .symbolRenderingMode(.palette)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(identity.displayName ?? "Account")
+                        .font(.headline)
+                    Text("Verified Organizer")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding(.vertical, 6)
         }
-        .frame(maxWidth: .infinity)
     }
 
-    private func signedInCard(identity: AuthIdentity) -> some View {
-        VStack(spacing: 8) {
-            avatar(for: identity)
-            Text(identity.displayName ?? "Account")
-                .font(.body.weight(.semibold))
-            Text("Verified ✓")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    private func avatar(for identity: AuthIdentity) -> some View {
-        Image(systemName: "person.crop.circle.fill")
-            .font(.system(size: 64))
-            .foregroundStyle(.secondary)
-    }
+    // MARK: - Sign In Sheet
 
     private var signInSheet: some View {
         VStack(spacing: 24) {
-            VStack(spacing: 6) {
-                Text("Sign In")
-                    .font(.title2.weight(.semibold))
-                Text("Post as a verified organizer and manage your hosted events.")
+            Image(systemName: "calendar.badge.plus")
+                .font(.system(size: 56))
+                .foregroundStyle(.tint)
+                .padding(.bottom, 8)
+            
+            VStack(spacing: 8) {
+                Text("Become an Organizer")
+                    .font(.title2.bold())
+                Text("Sign in to post as a verified organizer and manage your hosted events.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
+                    .padding(.horizontal, 24)
             }
+            
             SignInWithGoogleView(onSuccess: { _ in }, onError: { _ in })
+                .padding(.top, 16)
         }
         .padding(32)
-        .presentationDetents([.medium])
+        .presentationDetents([.fraction(0.45), .medium]) // Snaps nicely on modern iOS
+        .presentationDragIndicator(.visible)
     }
 }
 
