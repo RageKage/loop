@@ -18,53 +18,73 @@ struct CreateEntryView: View {
                 pendingScansBanner
             }
 
-            Spacer()
+            Spacer().frame(minHeight: 80, maxHeight: 100)
 
             // ── Hero ────────────────────────────────────────────────────────
-            VStack(spacing: 10) {
-                Image(systemName: "calendar.badge.plus")
-                    .font(.system(size: 60, weight: .light))
-                    .foregroundStyle(.blue)
+            VStack(spacing: 24) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 28, style: .continuous)
+                        .fill(Color.accentColor.opacity(0.1))
+                        .frame(width: 120, height: 120)
 
-                Text("Add an Event")
-                    .font(.title2)
-                    .fontWeight(.bold)
+                    Image(systemName: "doc.text.viewfinder")
+                        .font(.system(size: 60))
+                        .foregroundStyle(Color.accentColor)
+                }
 
-                Text("How would you like to add it?")
-                    .font(.subheadline)
+                VStack(spacing: 8) {
+                    Text("Snap a Poster")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.primary)
+
+                    Text("AI reads the details automatically")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                }
+                .multilineTextAlignment(.center)
+            }
+
+            // ── Primary CTA ──────────────────────────────────────────────────
+            Button { coordinator = PosterScanCoordinator() } label: {
+                Label("Choose Photo", systemImage: "photo.fill")
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(Color.accentColor)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 32)
+
+            // ── "or" divider ─────────────────────────────────────────────────
+            HStack(spacing: 12) {
+                Rectangle()
+                    .fill(Color(.systemGray4))
+                    .frame(height: 0.5)
+                Text("or")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
+                Rectangle()
+                    .fill(Color(.systemGray4))
+                    .frame(height: 0.5)
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 32)
+
+            // ── Secondary action ─────────────────────────────────────────────
+            NavigationLink {
+                CreateEventFormView(onPublished: onEventPublished)
+            } label: {
+                Label("Enter manually", systemImage: "square.and.pencil")
+                    .font(.body)
+                    .foregroundStyle(Color.accentColor)
             }
 
             Spacer()
-
-            // ── Option cards ─────────────────────────────────────────────────
-            VStack(spacing: 12) {
-                NavigationLink {
-                    CreateEventFormView(onPublished: onEventPublished)
-                } label: {
-                    entryCard(
-                        icon: "square.and.pencil",
-                        title: "Manual Entry",
-                        subtitle: "Fill in the event details yourself",
-                        badge: nil
-                    )
-                }
-                .buttonStyle(.plain)
-
-                Button { coordinator = PosterScanCoordinator() } label: {
-                    entryCard(
-                        icon: "camera.viewfinder",
-                        title: "Snap a Poster",
-                        subtitle: "AI reads the details automatically",
-                        badge: nil
-                    )
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 40)
         }
-        .navigationTitle("Create")
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $enterManuallyFromScan) {
             CreateEventFormView(onPublished: onEventPublished)
@@ -123,46 +143,6 @@ struct CreateEntryView: View {
         .buttonStyle(.plain)
     }
 
-    private func entryCard(
-        icon: String,
-        title: String,
-        subtitle: String,
-        badge: String?
-    ) -> some View {
-        HStack(spacing: 14) {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundStyle(.blue)
-                .frame(width: 36)
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .fontWeight(.semibold)
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Spacer()
-
-            if let badge {
-                Text(badge)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(Color(.systemGray5))
-                    .clipShape(Capsule())
-            } else {
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding()
-        .background(Color(.systemGray6))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-    }
 }
 
 #Preview {
