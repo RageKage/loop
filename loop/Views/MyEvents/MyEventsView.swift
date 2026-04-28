@@ -52,50 +52,48 @@ struct MyEventsView: View {
     // MARK: - Body
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                Picker("Tab", selection: $selectedTab) {
-                    ForEach(MyEventsTab.allCases) { tab in
-                        Text(tab.displayName).tag(tab)
-                    }
+        VStack(spacing: 0) {
+            Picker("Tab", selection: $selectedTab) {
+                ForEach(MyEventsTab.allCases) { tab in
+                    Text(tab.displayName).tag(tab)
                 }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                .padding(.top, 8)
-                .padding(.bottom, 4)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.top, 8)
+            .padding(.bottom, 4)
 
-                Group {
-                    if selectedTab == .hosting && identity == nil {
-                        signedOutHostingState
-                    } else if upcoming.isEmpty && past.isEmpty {
-                        emptyState(for: selectedTab)
-                    } else {
-                        eventList
-                    }
+            Group {
+                if selectedTab == .hosting && identity == nil {
+                    signedOutHostingState
+                } else if upcoming.isEmpty && past.isEmpty {
+                    emptyState(for: selectedTab)
+                } else {
+                    eventList
                 }
-                .animation(.default, value: selectedTab)
             }
-            .navigationTitle("My Events")
-            .navigationBarTitleDisplayMode(.inline)
-            .sheet(item: $selectedEvent) { event in
-                EventDetailView(event: event)
+            .animation(.default, value: selectedTab)
+        }
+        .navigationTitle("My Events")
+        .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $selectedEvent) { event in
+            EventDetailView(event: event)
+        }
+        .confirmationDialog(
+            "Delete this event?",
+            isPresented: Binding(
+                get: { eventPendingDelete != nil },
+                set: { if !$0 { eventPendingDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                if let event = eventPendingDelete { deleteEvent(event) }
+                eventPendingDelete = nil
             }
-            .confirmationDialog(
-                "Delete this event?",
-                isPresented: Binding(
-                    get: { eventPendingDelete != nil },
-                    set: { if !$0 { eventPendingDelete = nil } }
-                ),
-                titleVisibility: .visible
-            ) {
-                Button("Delete", role: .destructive) {
-                    if let event = eventPendingDelete { deleteEvent(event) }
-                    eventPendingDelete = nil
-                }
-                Button("Cancel", role: .cancel) { eventPendingDelete = nil }
-            } message: {
-                Text("This cannot be undone.")
-            }
+            Button("Cancel", role: .cancel) { eventPendingDelete = nil }
+        } message: {
+            Text("This cannot be undone.")
         }
     }
 

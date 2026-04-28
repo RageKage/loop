@@ -15,13 +15,13 @@ struct YouView: View {
 
                 Section("Activity") {
                     NavigationLink {
-                        Text("My Events stub")
+                        MyEventsView()
                     } label: {
                         Label("My Events", systemImage: "calendar.badge.clock")
                     }
 
                     NavigationLink {
-                        Text("Notifications stub")
+                        NotificationPreferencesView()
                     } label: {
                         Label("Notifications", systemImage: "bell")
                     }
@@ -29,13 +29,13 @@ struct YouView: View {
 
                 Section("App") {
                     NavigationLink {
-                        Text("Settings stub")
+                        SettingsView()
                     } label: {
                         Label("Settings", systemImage: "gear")
                     }
 
                     NavigationLink {
-                        Text("About stub")
+                        AboutView()
                     } label: {
                         Label("About", systemImage: "info.circle")
                     }
