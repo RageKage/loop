@@ -58,6 +58,3 @@ Also required for CloudKit sync (Phase 4c) and Push Notifications.
 ### Past-date posters silently snap to today (now addressed in Phase 4-fixes-a)
 When an AI-scanned poster has a date in the past, the DatePicker's future-only range caused the startDate to silently reset to today. Fixed in Phase 4-fixes-a by removing the range constraint, adding a visible "date is in the past" warning banner, and keeping Publish-time validation.
 
-## Still deferred
-
-- **🟡 Debug log cleanup** — Leftover from confidence-highlight diagnostics. Should be removed after verification. Files: `CreateEventViewModel.swift`, `ClaudeVisionService.swift`, `ConfidenceStyle.swift`, `DiscoverViewModel.swift` (Fix 2 expiry log).
