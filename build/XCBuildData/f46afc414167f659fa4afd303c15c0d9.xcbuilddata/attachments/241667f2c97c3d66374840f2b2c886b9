@@ -1,4 +1,0 @@
-module GoogleUtilities_Environment {
-umbrella "/Users/fadel/Library/Developer/Xcode/DerivedData/loop-cxsqqvwweagbrugdpdfrcgfcryez/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Environment/Public"
-export *
-}

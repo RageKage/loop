@@ -1,4 +1,0 @@
-module GoogleUtilities_Logger {
-umbrella "/Users/fadel/Library/Developer/Xcode/DerivedData/loop-cxsqqvwweagbrugdpdfrcgfcryez/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Logger/Public"
-export *
-}

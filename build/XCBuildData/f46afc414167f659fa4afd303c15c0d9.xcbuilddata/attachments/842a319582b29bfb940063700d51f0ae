@@ -1,4 +1,0 @@
-module third_party_IsAppEncrypted {
-umbrella "/Users/fadel/Library/Developer/Xcode/DerivedData/loop-cxsqqvwweagbrugdpdfrcgfcryez/SourcePackages/checkouts/GoogleUtilities/third_party/IsAppEncrypted/Public"
-export *
-}
