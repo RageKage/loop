@@ -29,7 +29,7 @@ Apple-native iOS app for discovering free community events. Users browse a map, 
 
 ```
 loopApp.swift            — App entry point, SwiftData container setup
-ContentView.swift        — Root TabView (Discover / Create / My Events / Settings)
+ContentView.swift        — Root TabView (Discover / Create / You)
 
 Models/
   Event.swift            — Core SwiftData model, all event fields
@@ -41,18 +41,19 @@ Models/
   AuthIdentity.swift     — Signed-in user identity
 
 Services/
-  AuthService.swift      — Auth state machine, Google/Apple sign-in dispatch
+  AuthService.swift        — Auth state machine, Google/Apple sign-in dispatch
   GoogleSignInService.swift — Google OAuth wrapper
   ClaudeVisionService.swift — Anthropic API call, poster → ExtractedEvent
-  KeychainService.swift  — Secure credential storage with dev fallback
-  DevAPIKey.swift        — Dev secrets (gitignored, never commit)
-  LocationService.swift  — CLLocationManager wrapper
-  NetworkMonitor.swift   — NWPathMonitor reachability
-  OnboardingState.swift  — First-launch flag persistence
-  RateLimiter.swift      — Throttle for Claude API calls
+  KeychainService.swift    — Secure credential storage with dev fallback
+  DevAPIKey.swift          — Dev secrets (gitignored, never commit)
+  LocationService.swift    — CLLocationManager wrapper
+  NetworkMonitor.swift     — NWPathMonitor reachability
+  NotificationService.swift — Local notification scheduling and permission management
+  OnboardingState.swift    — First-launch flag persistence
+  RateLimiter.swift        — Throttle for Claude API calls
 
 ViewModels/
-  DiscoverViewModel.swift  — Map/list state, filtering, search
+  DiscoverViewModel.swift    — Map/list state, filtering, search
   CreateEventViewModel.swift — Form state, poster scan orchestration
 
 Views/
@@ -64,10 +65,12 @@ Views/
   Discover/              — DiscoverView, EventDetailView, EventMapView,
                            EventListView, EventListRowView, EventPinView,
                            FilterBarView
-  MyEvents/              — MyEventsView
+  MyEvents/              — MyEventsView (navigated to from YouView)
   Onboarding/            — OnboardingView (3-page, skip-able)
-  Settings/              — (settings screens)
+  Settings/              — SettingsView, NotificationPreferencesView, APIKeySetupView
   Shared/                — ReportEventSheet, shared reusable components
+  You/                   — YouView (profile hub: identity header, Activity/App nav),
+                           AboutView
 
 Utilities/
   DesignTokens.swift     — Centralized colors, typography, spacing
@@ -83,9 +86,9 @@ Assets.xcassets/         — App icons, accent/background/surface/text color set
 ```
 
 ## Current phase status
-- **Shipped:** Phase 1–4 (foundation through trust signals), Phase 4-fixes-a/b (polish), Phase 5-a (onboarding), Phase 5-b (search)
-- **In progress:** Phase 5 — next is 5-e (Discover polish)
-- **Deferred:** Phase 4c (CloudKit sync — needs $99 Apple Developer Program), Apple Sign In (same reason)
+- **Shipped:** Phase 1–4 (foundation through trust signals), Phase 4-fixes-a/b (polish), Phase 5-a (onboarding), Phase 5-b (search), Phase 5-c (local notifications), Phase 5-d (share event), Phase 5-e (Discover polish), Phase 6 (You tab — 3-tab shell, YouView profile hub, identity states, sign in/out CTAs), Phase 7 (Snap a Poster hero treatment on Create entry)
+- **In progress:** Discover iteration (DiscoverView.swift has uncommitted changes)
+- **Deferred:** Phase 4c (CloudKit sync — needs $99 Apple Developer Program), Apple Sign In (same reason), push notifications real-device verification (see KNOWN_ISSUES.md)
 
 ## Coding conventions
 - Swift 6 strict concurrency; main-actor default on all view models and services

@@ -60,14 +60,4 @@ When an AI-scanned poster has a date in the past, the DatePicker's future-only r
 
 ## Still deferred
 
-- **Confidence prompt tuning** — Haiku returns `"high"` on all fields even for degraded/low-quality poster images. Needs prompt tuning in `ClaudeVisionService` extraction prompt. Consider adding explicit rules like "use 'low' if you're inferring a field rather than reading it directly."
-- **SF Symbol `calendar.clock` warning** — Should be `calendar.badge.clock`. Console warning only, not user-visible. Grep the project for `calendar.clock` to locate.
 - **🟡 Debug log cleanup** — Leftover from confidence-highlight diagnostics. Should be removed after verification. Files: `CreateEventViewModel.swift`, `ClaudeVisionService.swift`, `ConfidenceStyle.swift`, `DiscoverViewModel.swift` (Fix 2 expiry log).
-- **#if DEBUG gate on Developer section** — Developer settings are currently always visible; should be wrapped in `#if DEBUG`.
-
-## Phase 4a — Poster Scanner
-
-1. **No future-date guard on extracted events**
-   - If poster says "July 28" with no year, Claude picks 2025 (past)
-   - Should default to next future occurrence when year is ambiguous
-   - Fix location: extraction prompt in `ClaudeVisionService`
