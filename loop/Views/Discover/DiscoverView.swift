@@ -15,6 +15,9 @@ struct DiscoverView: View {
     @State private var locationService = LocationService()
     @State private var viewModel       = DiscoverViewModel()
     @State private var selectedEvent: Event?
+    
+    // Added to track when the search bar is focused/clicked
+    @State private var isSearchActive = false
 
     // Shared with ContentView via UserDefaults so we can switch tabs from empty state.
     @AppStorage("selectedTab") private var selectedTab = 0
@@ -138,6 +141,12 @@ struct DiscoverView: View {
                     }
                 }
             }
+            // ADDED: Forces the layout shift to animate smoothly.
+            // Opens slowly (response 0.5), closes a little faster (response 0.35)
+            .animation(
+                isSearchActive ? .spring(response: 0.5, dampingFraction: 0.9) : .spring(response: 0.35, dampingFraction: 0.9),
+                value: isSearchActive
+            )
             .navigationTitle("Discover")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -154,6 +163,7 @@ struct DiscoverView: View {
             }
             .searchable(
                 text: $viewModel.searchText,
+                isPresented: $isSearchActive, // ADDED: Binds the search bar state so we can react to it
                 placement: .navigationBarDrawer(displayMode: .always),
                 prompt: "Search events, venues, organizers"
             )

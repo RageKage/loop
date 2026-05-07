@@ -124,24 +124,41 @@ struct CreateEntryView: View {
     // MARK: - Subviews
 
     private var pendingScansBanner: some View {
-        Button { showPendingScans = true } label: {
-            HStack {
-                Image(systemName: "clock.badge.exclamationmark")
-                    .foregroundStyle(.orange)
-                Text("\(pendingScans.count) poster\(pendingScans.count == 1 ? "" : "s") waiting to scan")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            Button {
+                showPendingScans = true
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "clock.badge.exclamationmark")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.orange)
+                    
+                    Text("\(pendingScans.count) poster\(pendingScans.count == 1 ? "" : "s") waiting to scan")
+                        .font(.subheadline)
+                        .fontWeight(.semibold) // Bumped up slightly for better hierarchy
+                        .foregroundStyle(.primary)
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14) // Slightly taller for a better touch target
+                // Convert to a floating pill with a softer background and subtle border
+                .background(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(Color.orange.opacity(0.12))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .strokeBorder(Color.orange.opacity(0.2), lineWidth: 1)
+                )
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
-            .background(Color(.systemYellow).opacity(0.15))
+            .buttonStyle(.plain)
+            .padding(.horizontal, 20) // Give it breathing room from the screen edges
+            .padding(.top, 8)
         }
-        .buttonStyle(.plain)
-    }
 
 }
 
